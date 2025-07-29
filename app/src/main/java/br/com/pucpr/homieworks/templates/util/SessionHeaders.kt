@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,14 +16,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun Header(text: String) {
+fun SessionHeader(text: String) {
     Row(
         modifier = Modifier
             .wrapContentWidth(),
         verticalAlignment = Alignment.Top
     ) {
         Icon(
-            imageVector = Icons.AutoMirrored.Default.KeyboardArrowLeft,
+            imageVector = Icons.AutoMirrored.Default.KeyboardArrowRight,
+//            imageVector = Icons.Default.KeyboardArrowDowbn,
             contentDescription = "Ícone de flecha para trás",
             tint = Color.Black,
             modifier = Modifier

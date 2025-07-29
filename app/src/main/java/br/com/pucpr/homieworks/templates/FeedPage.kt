@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.pucpr.homieworks.data.Job
 import br.com.pucpr.homieworks.templates.util.Card
-import br.com.pucpr.homieworks.templates.util.Header
+import br.com.pucpr.homieworks.templates.util.SessionHeader
 import br.com.pucpr.homieworks.templates.util.InfiniteAutoScrollList
 import br.com.pucpr.homieworks.templates.util.SearchBar
 import br.com.pucpr.homieworks.ui.theme.mediumCean
@@ -58,7 +58,7 @@ fun FeedHeader() {
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Header("Feed")
+        SessionHeader("Feed")
         Row(
             modifier = Modifier
                 .wrapContentWidth(),
