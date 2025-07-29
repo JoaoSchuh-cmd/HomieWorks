@@ -1,8 +1,9 @@
 package br.com.pucpr.homieworks.templates.util
 
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
@@ -17,25 +18,31 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun SessionHeader(text: String) {
-    Row(
-        modifier = Modifier
-            .wrapContentWidth(),
-        verticalAlignment = Alignment.Top
-    ) {
-        Icon(
-            imageVector = Icons.AutoMirrored.Default.KeyboardArrowRight,
-//            imageVector = Icons.Default.KeyboardArrowDowbn,
-            contentDescription = "Ícone de flecha para trás",
-            tint = Color.Black,
+    BoxWithConstraints {
+        val width = maxWidth * 0.6f
+
+        Row(
             modifier = Modifier
-                .size(32.dp)
-                .align(Alignment.CenterVertically),
-        )
-        Text(
-            text = text,
-            fontSize = 36.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black
-        )
+                .width(width),
+            verticalAlignment = Alignment.Top
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Default.KeyboardArrowRight,
+//            imageVector = Icons.Default.KeyboardArrowDowbn,
+                contentDescription = "Ícone de flecha para trás",
+                tint = Color.Black,
+                modifier = Modifier
+                    .size(32.dp)
+                    .align(Alignment.CenterVertically),
+            )
+            Text(
+                text = text,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black,
+                modifier = Modifier.weight(1f)
+            )
+        }
     }
+
 }

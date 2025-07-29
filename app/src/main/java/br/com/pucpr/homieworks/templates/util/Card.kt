@@ -28,14 +28,17 @@ import br.com.pucpr.homieworks.ui.theme.mediumCean
 import br.com.pucpr.homieworks.ui.theme.yeallow
 
 @Composable
-fun Card(job: Job) {
+fun Card(
+    job: Job,
+    backgroundColor: Color = mediumCean
+) {
     androidx.compose.material3.Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(180.dp),
         elevation = CardDefaults.cardElevation(8.dp),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = mediumCean, contentColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = backgroundColor, contentColor = Color.White)
     ) {
         Column(
             modifier = Modifier

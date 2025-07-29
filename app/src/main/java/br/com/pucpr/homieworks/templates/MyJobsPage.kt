@@ -25,14 +25,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.pucpr.homieworks.data.Job
 import br.com.pucpr.homieworks.templates.util.Card
-import br.com.pucpr.homieworks.templates.util.SessionHeader
 import br.com.pucpr.homieworks.templates.util.InfiniteAutoScrollList
 import br.com.pucpr.homieworks.templates.util.SearchBar
+import br.com.pucpr.homieworks.templates.util.SessionHeader
+import br.com.pucpr.homieworks.ui.theme.lightRed
 import br.com.pucpr.homieworks.ui.theme.mediumCean
 import br.com.pucpr.homieworks.ui.theme.yeallow
 
 @Composable
-fun FeedPage() {
+fun MyJobsPage() {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -44,21 +45,21 @@ fun FeedPage() {
                 .fillMaxHeight(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            FeedHeader()
-            FeedContent()
-            FeedFooter()
+            MyJobsHeader()
+            MyJobsContent()
+            MyJobsFooter()
         }
     }
 }
 
 @Composable
-fun FeedHeader() {
+fun MyJobsHeader() {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        SessionHeader("Feed")
+        SessionHeader("Meus anúncios")
         Row(
             modifier = Modifier
                 .wrapContentWidth(),
@@ -80,7 +81,7 @@ fun FeedHeader() {
 }
 
 @Composable
-fun FeedContent() {
+fun MyJobsContent() {
     val jobs = remember {
         List(100) { i ->
             Job(
@@ -96,12 +97,15 @@ fun FeedContent() {
         items = jobs,
         scrollDelayMs = 3000L,
         itemContent = { job ->
-            Card(job)
-        }
+            Card(
+                job = job,
+                backgroundColor = lightRed
+            )
+        },
     )
 }
 
 @Composable
-fun FeedFooter() {
+fun MyJobsFooter() {
     SearchBar()
 }
