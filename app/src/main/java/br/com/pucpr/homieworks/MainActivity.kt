@@ -6,8 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import br.com.pucpr.homieworks.templates.LoginPage
-import br.com.pucpr.homieworks.templates.SignUpPage
+import br.com.pucpr.homieworks.templates.FeedPage
 import br.com.pucpr.homieworks.ui.theme.HomieWorksTheme
 
 class MainActivity : ComponentActivity() {
@@ -17,8 +16,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             HomieWorksTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {
-                    SignUpPage()
-//                    LoginPage()
+                    FeedPage()
                 }
             }
         }
