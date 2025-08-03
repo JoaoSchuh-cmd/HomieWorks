@@ -18,8 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import br.com.pucpr.homieworks.ui.theme.lightCean
-import br.com.pucpr.homieworks.ui.theme.mediumCean
-import br.com.pucpr.homieworks.ui.theme.mediumRed
 
 @Composable
 fun SearchBar() {
@@ -33,18 +31,18 @@ fun SearchBar() {
         colors = TextFieldDefaults.colors(
           focusedContainerColor = lightCean,
           unfocusedContainerColor = lightCean,
-          focusedTextColor = mediumCean,
-          unfocusedTextColor = mediumCean,
-          cursorColor = mediumCean,
+          focusedTextColor = Color.White,
+          unfocusedTextColor = Color.White,
+          cursorColor = Color.White,
           focusedIndicatorColor = Color.Transparent,
           unfocusedIndicatorColor = Color.Transparent
         ),
-        label = {Text("Pesquisar telefone, trabalho, nome...", color = mediumCean)},
+        label = {Text("Pesquisar telefone, trabalho, nome...", color = Color.White)},
         onValueChange = {text = it},
         trailingIcon = { Icon(
             imageVector = Icons.Rounded.Search,
             contentDescription = "Ícone de pesquisa",
-            tint = mediumRed,
+            tint = Color.White,
             modifier = Modifier.size(28.dp)
         )}
     )

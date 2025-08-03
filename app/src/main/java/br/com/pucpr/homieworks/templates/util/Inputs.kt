@@ -37,8 +37,7 @@ fun InputText(
             value = text,
             onValueChange = {text = it},
             label = { Text(label) },
-            modifier = Modifier
-                .fillMaxWidth(0.9f),
+            modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = backGroundColor,

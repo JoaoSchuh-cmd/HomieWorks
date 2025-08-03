@@ -2,15 +2,11 @@ package br.com.pucpr.homieworks.templates
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -33,41 +29,31 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import br.com.pucpr.homieworks.templates.util.InputText
 import br.com.pucpr.homieworks.templates.util.SessionHeader
-import br.com.pucpr.homieworks.ui.theme.lightCean
-import br.com.pucpr.homieworks.ui.theme.mediumCean
-import br.com.pucpr.homieworks.ui.theme.yeallow
+import br.com.pucpr.homieworks.ui.theme.yellow
 import androidx.compose.material.icons.rounded.Face
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.ui.text.font.FontWeight
+import br.com.pucpr.homieworks.templates.util.GenericPage
 import br.com.pucpr.homieworks.ui.theme.lightGreen
 import br.com.pucpr.homieworks.ui.theme.lightRed
-import br.com.pucpr.homieworks.ui.theme.mediumRed
+import br.com.pucpr.homieworks.ui.theme.darkCean
+import br.com.pucpr.homieworks.ui.theme.superLightCean
 
 @Composable
 fun ProfilePage() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = mediumCean)
-            .padding(vertical = 32.dp, horizontal = 16.dp)
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            ProfileHeader()
-            ProfileContent()
-            ProfileFooter()
-        }
-
-    }
+    GenericPage(
+        { ProfileHeader() },
+        { ProfileContent() },
+        { ProfileFooter() }
+    )
 }
 
 @Composable
 fun ProfileHeader() {
     val helpedits = 0
     val workDone = 0
+    val fontColor = Color.White
 
     Row(
         modifier = Modifier
@@ -79,23 +65,23 @@ fun ProfileHeader() {
             Text(
                 text="Helpedits:",
                 style = MaterialTheme.typography.titleMedium,
-                color = Color.Black
+                color = fontColor
             )
             Text(
                 text = helpedits.toString(),
                 style = MaterialTheme.typography.titleLarge,
-                color = yeallow,
+                color = yellow,
                 fontWeight = FontWeight.Bold
             )
             Text(
                 text="Trabalhos realizados:",
                 style = MaterialTheme.typography.titleMedium,
-                color = Color.Black
+                color = fontColor
             )
             Text(
                 text = workDone.toString(),
                 style = MaterialTheme.typography.titleLarge,
-                color = yeallow,
+                color = yellow,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -111,40 +97,43 @@ fun ProfileHeader() {
 
 @Composable
 fun ProfileContent() {
+    val fontColor = darkCean
+    val backgroundColor = superLightCean
+
     InputText(
         label = "Nome",
-        leadingIcon =  {Icon(imageVector = Icons.Rounded.Face, contentDescription = "Ícone de pessoa", tint = mediumCean)},
+        leadingIcon =  {Icon(imageVector = Icons.Rounded.Face, contentDescription = "Ícone de pessoa", tint = fontColor)},
         isSecret = false,
-        backGroundColor = lightCean,
-        fontColor = mediumCean
+        backGroundColor = backgroundColor,
+        fontColor = fontColor
     )
     InputText(
         label = "Nome de usuário",
-        leadingIcon = {Icon(imageVector = Icons.Rounded.Person, contentDescription = "Ícone de pessoa", tint = mediumCean)},
+        leadingIcon = {Icon(imageVector = Icons.Rounded.Person, contentDescription = "Ícone de pessoa", tint = fontColor)},
         isSecret = false,
-        backGroundColor = lightCean,
-        fontColor = mediumCean
+        backGroundColor = backgroundColor,
+        fontColor = fontColor
     )
     InputText(
         label = "Senha",
-        leadingIcon = {Icon(imageVector = Icons.Rounded.Lock, contentDescription = "Ícone de cadeado", tint = mediumCean)},
+        leadingIcon = {Icon(imageVector = Icons.Rounded.Lock, contentDescription = "Ícone de cadeado", tint = fontColor)},
         isSecret = true,
-        backGroundColor = lightCean,
-        fontColor = mediumCean
+        backGroundColor = backgroundColor,
+        fontColor = fontColor
     )
     InputText(
         label = "Número de telefone",
-        leadingIcon = {Icon(imageVector = Icons.Rounded.Phone, contentDescription = "Ícone de telefone", tint = mediumCean)},
+        leadingIcon = {Icon(imageVector = Icons.Rounded.Phone, contentDescription = "Ícone de telefone", tint = fontColor)},
         isSecret = true,
-        backGroundColor = lightCean,
-        fontColor = mediumCean
+        backGroundColor = backgroundColor,
+        fontColor = fontColor
     )
     InputText(
         label = "Endereço",
-        leadingIcon = {Icon(imageVector = Icons.Rounded.LocationOn, contentDescription = "Ícone de telefone", tint = mediumCean)},
+        leadingIcon = {Icon(imageVector = Icons.Rounded.LocationOn, contentDescription = "Ícone de telefone", tint = fontColor)},
         isSecret = true,
-        backGroundColor = lightCean,
-        fontColor = mediumCean
+        backGroundColor = backgroundColor,
+        fontColor = fontColor
     )
 }
 
@@ -209,9 +198,9 @@ fun ProfileFooter() {
                 onClick = {},
                 colors = ButtonDefaults.outlinedButtonColors(
                     containerColor = Color.Black,
-                    contentColor = mediumRed
+                    contentColor = lightRed
                 ),
-                border = BorderStroke(2.dp, mediumRed)
+                border = BorderStroke(2.dp, lightRed)
             ) {
                 Text(
                     text = "Excluir conta",

@@ -21,13 +21,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.com.pucpr.homieworks.ui.theme.yeallow
+import br.com.pucpr.homieworks.ui.theme.yellow
 
 @Composable
 fun SessionHeader(
     text: String,
     is_complete: Boolean = true,
 ) {
+    val fontColor = Color.White
+
     BoxWithConstraints {
         val width = maxWidth * 0.6f
         Row(
@@ -44,7 +46,7 @@ fun SessionHeader(
                     imageVector = Icons.AutoMirrored.Default.KeyboardArrowRight,
 //                    imageVector = Icons.Default.KeyboardArrowDowbn,
                     contentDescription = "Ícone de flecha para trás",
-                    tint = Color.Black,
+                    tint = fontColor,
                     modifier = Modifier
                         .size(32.dp)
                         .align(Alignment.CenterVertically),
@@ -53,7 +55,7 @@ fun SessionHeader(
                     text = text,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black,
+                    color = fontColor,
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -69,10 +71,10 @@ fun SessionHeader(
                         Text(
                             "Helpedits:",
                             style = MaterialTheme.typography.titleMedium,
-                            color = Color.Black,
+                            color = fontColor,
                             fontWeight = FontWeight.Bold
                         )
-                        Text("200", fontSize = 20.sp, color = yeallow, fontWeight = FontWeight.Bold)
+                        Text("200", fontSize = 20.sp, color = yellow, fontWeight = FontWeight.Bold)
                     }
                     Icon(
                         imageVector = Icons.Rounded.AccountCircle,

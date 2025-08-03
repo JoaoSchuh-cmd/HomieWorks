@@ -3,9 +3,9 @@ package br.com.pucpr.homieworks.templates
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
@@ -33,21 +32,23 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import br.com.pucpr.homieworks.templates.util.GenericButton
 import br.com.pucpr.homieworks.templates.util.InputText
+import br.com.pucpr.homieworks.ui.theme.darkCean
 import br.com.pucpr.homieworks.ui.theme.lightCean
 import br.com.pucpr.homieworks.ui.theme.lightGreen
 import br.com.pucpr.homieworks.ui.theme.lightRed
-import br.com.pucpr.homieworks.ui.theme.mediumCean
+import br.com.pucpr.homieworks.ui.theme.superLightCean
 
 @Composable
 fun SignUpPage() {
-    var session by remember { mutableIntStateOf(0) }
+    var session by remember { mutableIntStateOf(1) }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(lightCean)
-            .padding(horizontal = 32.dp, vertical = 30.dp)
+            .background(superLightCean)
+            .padding(horizontal = 32.dp, vertical = 40.dp)
     ) {
         Column(
             modifier = Modifier
@@ -91,7 +92,7 @@ fun SignUpInfo(label: String, session: Int) {
             fontStyle = FontStyle.Italic,
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
-            color = mediumCean,
+            color = darkCean,
         )
         Text(
             text = "Session ${session}/2",
@@ -104,89 +105,89 @@ fun SignUpInfo(label: String, session: Int) {
 
 @Composable
 fun InputForm(session: Int) {
-    BoxWithConstraints {
-        val spacing = maxHeight * 0.03f
-
-        Column(
-            modifier = Modifier
-                .wrapContentHeight()
-                .background(color = mediumCean, shape = RoundedCornerShape(10.dp))
-                .padding(vertical = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(spacing)
-        ) {
-           if (session == 1) PersonalInfoForm() else AddressInfoForm()
-        }
+    Column(
+        modifier = Modifier
+            .wrapContentHeight(),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+       if (session == 1) PersonalInfoForm() else AddressInfoForm()
     }
 }
 
 @Composable
 fun PersonalInfoForm() {
+    val backGroundColor = darkCean
+    val fontColor = superLightCean
+
     InputText(
         label = "Nome",
         leadingIcon = null,
         isSecret = false,
-        backGroundColor = lightCean,
-        fontColor = mediumCean
+        backGroundColor = backGroundColor,
+        fontColor = fontColor
     )
     InputText(
         label = "Celular",
         leadingIcon = null,
         isSecret = false,
-        backGroundColor = lightCean,
-        fontColor = mediumCean
+        backGroundColor = backGroundColor,
+        fontColor = fontColor
     )
     InputText(
         label = "Nome de usuário",
         leadingIcon = null,
         isSecret = false,
-        backGroundColor = lightCean,
-        fontColor = mediumCean
+        backGroundColor = backGroundColor,
+        fontColor = fontColor
     )
     InputText(
         label = "Senha",
         leadingIcon = null,
         isSecret = true,
-        backGroundColor = lightCean,
-        fontColor = mediumCean
+        backGroundColor = backGroundColor,
+        fontColor = fontColor
     )
 }
 
 @Composable
 fun AddressInfoForm() {
+    val backgroundColor = darkCean
+    val fontColor = superLightCean
+
     InputText(
         label = "Rua",
         leadingIcon = null,
         isSecret = false,
-        backGroundColor = lightCean,
-        fontColor = mediumCean
+        backGroundColor = backgroundColor,
+        fontColor = fontColor
     )
     InputText(
         label = "Numéro",
         leadingIcon = null,
         isSecret = false,
-        backGroundColor = lightCean,
-        fontColor = mediumCean
+        backGroundColor = backgroundColor,
+        fontColor = fontColor
     )
     InputText(
         label = "Cidade",
         leadingIcon = null,
         isSecret = false,
-        backGroundColor = lightCean,
-        fontColor = mediumCean
+        backGroundColor = backgroundColor,
+        fontColor = fontColor
     )
     InputText(
         label = "Estado",
         leadingIcon = null,
         isSecret = true,
-        backGroundColor = lightCean,
-        fontColor = mediumCean
+        backGroundColor = backgroundColor,
+        fontColor = fontColor
     )
     InputText(
         label = "CEP",
         leadingIcon = null,
         isSecret = false,
-        backGroundColor = lightCean,
-        fontColor = mediumCean
+        backGroundColor = backgroundColor,
+        fontColor = fontColor
     )
 }
 
@@ -194,50 +195,45 @@ fun AddressInfoForm() {
 fun SignUpFooter(session: Int, onSessionChange: (Int) -> Unit) {
     Column(
         modifier = Modifier
-            .fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+            .fillMaxWidth()
+            .fillMaxHeight(),
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
         if (session == 1) PersonalInfoFooter(onSessionChange = onSessionChange) else AddressInfoFooter(onSessionChange)
-        Button(
-            modifier = Modifier
-                .height(60.dp)
-                .fillMaxWidth(),
-            onClick = {},
-            colors = ButtonDefaults.buttonColors(Color.White)
-        ) {
-            Text(text = "Eu já possuo uma conta...", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-        }
+
+        GenericButton(
+            textColor = Color.White,
+            containerColor = lightCean,
+            text = "Eu já possuo uma conta...",
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }
 
 @Composable
 fun PersonalInfoFooter(onSessionChange: (Int) -> Unit) {
-    Row(
+    Column(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Button(
-            modifier = Modifier
-                .wrapContentWidth()
-                .height(60.dp),
-            onClick = {},
-            colors = ButtonDefaults.buttonColors(containerColor = lightRed, contentColor = Color.White)
-        ) { Text(text = "Cancelar", fontSize = 18.sp, fontWeight = FontWeight.Bold) }
-        Button(
-            modifier = Modifier
-                .wrapContentWidth()
-                .height(60.dp),
-            onClick = {onSessionChange(2)},
-            colors = ButtonDefaults.buttonColors(containerColor = lightGreen, contentColor = Color.White)
-        ) {
-            Text(text = "Próximo", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            Icon(
-                imageVector = Icons.AutoMirrored.Default.ArrowForward,
-                contentDescription = "Seta para a direita",
-                modifier = Modifier
-                    .size(20.dp)
-            )
-        }
+        GenericButton(
+            text = "Próximo",
+            containerColor = lightGreen,
+            icon = {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Default.ArrowForward,
+                    contentDescription = "Seta para a direita",
+                    modifier = Modifier
+                        .size(20.dp)
+                )
+            },
+            modifier = Modifier.fillMaxWidth()
+        )
+        GenericButton(
+            text = "Cancelar",
+            containerColor = lightRed,
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }
 

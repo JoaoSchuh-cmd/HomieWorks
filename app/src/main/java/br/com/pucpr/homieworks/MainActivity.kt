@@ -7,7 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import br.com.pucpr.homieworks.data.Job
-import br.com.pucpr.homieworks.templates.JobDetailsPage
+import br.com.pucpr.homieworks.templates.SignUpPage
 import br.com.pucpr.homieworks.ui.theme.HomieWorksTheme
 
 class MainActivity : ComponentActivity() {
@@ -23,8 +23,7 @@ class MainActivity : ComponentActivity() {
                         userAddress = "Rua fictícia, 999, M.C.R - PR",
                         data = "31/07/2052"
                     )
-
-                    JobDetailsPage(job)
+                    SignUpPage()
                 }
             }
         }

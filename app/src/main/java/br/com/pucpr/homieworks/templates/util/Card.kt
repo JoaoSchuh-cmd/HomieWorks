@@ -23,22 +23,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import br.com.pucpr.homieworks.data.Job
-import br.com.pucpr.homieworks.ui.theme.lightCean
+import br.com.pucpr.homieworks.ui.theme.darkCean
 import br.com.pucpr.homieworks.ui.theme.mediumCean
-import br.com.pucpr.homieworks.ui.theme.yeallow
+import br.com.pucpr.homieworks.ui.theme.superLightCean
+import br.com.pucpr.homieworks.ui.theme.yellow
 
 @Composable
 fun Card(
     job: Job,
     backgroundColor: Color = mediumCean
 ) {
+    val fontColor = Color.White
+
     androidx.compose.material3.Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(180.dp),
         elevation = CardDefaults.cardElevation(8.dp),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = backgroundColor, contentColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = backgroundColor, contentColor = fontColor)
     ) {
         Column(
             modifier = Modifier
@@ -64,13 +67,13 @@ fun Card(
                         Text(
                             text = "10",
                             style = MaterialTheme.typography.titleLarge,
-                            color = yeallow,
+                            color = yellow,
                             fontWeight = FontWeight.Bold,
                         )
                         Icon(
                             imageVector = Icons.Filled.ThumbUp,
                             contentDescription = "Ícone de positivo",
-                            tint = yeallow
+                            tint = yellow
                         )
                     }
                     Text(
@@ -86,10 +89,10 @@ fun Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)
-                    .background(color = lightCean, shape = RoundedCornerShape(16.dp)),
+                    .background(color = superLightCean, shape = RoundedCornerShape(16.dp)),
                 contentAlignment = Alignment.Center,
             ) {
-                Text(job.description, style = MaterialTheme.typography.titleMedium, color = Color.Black)
+                Text(job.description, style = MaterialTheme.typography.titleMedium, color = darkCean)
             }
 
         }

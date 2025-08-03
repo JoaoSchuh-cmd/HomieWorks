@@ -2,13 +2,10 @@ package br.com.pucpr.homieworks.templates
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -31,32 +28,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import br.com.pucpr.homieworks.data.Job
 import br.com.pucpr.homieworks.templates.util.GenericButton
+import br.com.pucpr.homieworks.templates.util.GenericPage
 import br.com.pucpr.homieworks.templates.util.SessionHeader
-import br.com.pucpr.homieworks.ui.theme.lightCean
 import br.com.pucpr.homieworks.ui.theme.lightGreen
 import br.com.pucpr.homieworks.ui.theme.lightRed
 import br.com.pucpr.homieworks.ui.theme.mediumCean
-import br.com.pucpr.homieworks.ui.theme.mediumRed
-import br.com.pucpr.homieworks.ui.theme.yeallow
+import br.com.pucpr.homieworks.ui.theme.darkCean
+import br.com.pucpr.homieworks.ui.theme.superLightCean
+import br.com.pucpr.homieworks.ui.theme.yellow
 
 @Composable
 fun JobDetailsPage(job: Job) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = mediumCean)
-            .padding(horizontal = 16.dp, vertical = 30.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxHeight(),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            JobDetailsHeader()
-            JobDetailsContent(job)
-            JobDetailsFooter()
-        }
-    }
+    GenericPage(
+        { JobDetailsHeader() },
+        { JobDetailsContent(job) },
+        { JobDetailsFooter() }
+    )
 }
 
 @Composable
@@ -72,7 +59,7 @@ fun JobDetailsContent(job: Job) {
         Column(
             modifier = Modifier
                 .height(height)
-                .background(color = lightRed, shape = RoundedCornerShape(16.dp))
+                .background(color = mediumCean, shape = RoundedCornerShape(16.dp))
                 .fillMaxWidth()
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -115,13 +102,13 @@ fun JobDetailsContent(job: Job) {
                         Text(
                             text = "10",
                             style = MaterialTheme.typography.titleLarge,
-                            color = yeallow,
+                            color = yellow,
                             fontWeight = FontWeight.Bold,
                         )
                         Icon(
                             imageVector = Icons.Filled.ThumbUp,
                             contentDescription = "Ícone de positivo",
-                            tint = yeallow
+                            tint = yellow
                         )
                     }
                     Text(
@@ -136,7 +123,7 @@ fun JobDetailsContent(job: Job) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.CenterHorizontally)
-                    .background(color = lightCean, shape = RoundedCornerShape(16.dp))
+                    .background(color = superLightCean, shape = RoundedCornerShape(16.dp))
                     .padding(16.dp)
                     .weight(1f)
             ) {
@@ -162,7 +149,7 @@ fun JobDetailsContent(job: Job) {
                 ) {
                     GenericButton(
                         text = "Para mais detalhes",
-                        containerColor = mediumCean,
+                        containerColor = darkCean,
                         textColor = Color.White,
                         icon = {Icon(
                             imageVector = Icons.Default.Whatsapp,
@@ -192,7 +179,7 @@ fun JobDetailsFooter() {
                 contentDescription = "Ícone de x",
                 tint = Color.White
             )},
-            containerColor = mediumRed
+            containerColor = lightRed
         )
         GenericButton(
             "Aceitar",
