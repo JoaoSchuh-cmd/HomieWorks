@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Handshake
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -44,7 +45,6 @@ fun SessionHeader(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Default.KeyboardArrowRight,
-//                    imageVector = Icons.Default.KeyboardArrowDowbn,
                     contentDescription = "Ícone de flecha para trás",
                     tint = fontColor,
                     modifier = Modifier
@@ -74,7 +74,15 @@ fun SessionHeader(
                             color = fontColor,
                             fontWeight = FontWeight.Bold
                         )
-                        Text("200", fontSize = 20.sp, color = yellow, fontWeight = FontWeight.Bold)
+                        Row {
+                            Text("200", fontSize = 20.sp, color = yellow, fontWeight = FontWeight.Bold)
+                            Icon(
+                                imageVector = Icons.Default.Handshake,
+                                tint = yellow,
+                                contentDescription = "Ícone de aperto de mãos"
+                            )
+                        }
+
                     }
                     Icon(
                         imageVector = Icons.Rounded.AccountCircle,

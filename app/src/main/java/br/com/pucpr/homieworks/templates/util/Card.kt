@@ -5,12 +5,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -31,7 +31,8 @@ import br.com.pucpr.homieworks.ui.theme.yellow
 @Composable
 fun Card(
     job: Job,
-    backgroundColor: Color = mediumCean
+    backgroundColor: Color = mediumCean,
+    withHelpeditsAndData: Boolean = true
 ) {
     val fontColor = Color.White
 
@@ -40,61 +41,80 @@ fun Card(
             .fillMaxWidth()
             .height(180.dp),
         elevation = CardDefaults.cardElevation(8.dp),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = backgroundColor, contentColor = fontColor)
     ) {
-        Column(
+        CardHeader(withHelpeditsAndData, job)
+
+        Box(
             modifier = Modifier
-                .fillMaxHeight()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.SpaceBetween
+                .fillMaxWidth()
+                .height(50.dp)
+                .background(color = superLightCean, shape = RoundedCornerShape(16.dp)),
+            contentAlignment = Alignment.Center,
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
+            Text(job.description, style = MaterialTheme.typography.titleMedium, color = darkCean)
+        }
+    }
+}
+
+@Composable
+fun CardHeader(withHelpeditsAndData: Boolean = true, job: Job) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column(
+            modifier = Modifier.weight(1.5f)
+        ) {
+            Row {
+                Icon(
+                    imageVector = Icons.Default.AccountCircle,
+                    contentDescription = "Ícone de conta pessoal",
+                    tint = Color.White,
+                    modifier = Modifier.size(46.dp)
+                )
                 Column {
-                    Text(job.userName, style = MaterialTheme.typography.titleMedium)
-                    Text(job.userAddress, style = MaterialTheme.typography.titleSmall)
-                }
-                Column {
-                    Row(
-                        modifier = Modifier
-                            .align(Alignment.End),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    ) {
-                        Text(
-                            text = "10",
-                            style = MaterialTheme.typography.titleLarge,
-                            color = yellow,
-                            fontWeight = FontWeight.Bold,
-                        )
-                        Icon(
-                            imageVector = Icons.Filled.ThumbUp,
-                            contentDescription = "Ícone de positivo",
-                            tint = yellow
-                        )
-                    }
                     Text(
-                        modifier = Modifier
-                            .align(Alignment.End),
-                        text = "Data: ${job.data}",
-                        style = MaterialTheme.typography.titleSmall
+                        text = job.userName,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(
+                        text = job.userAddress,
+                        style = MaterialTheme.typography.titleSmall,
                     )
                 }
             }
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-                    .background(color = superLightCean, shape = RoundedCornerShape(16.dp)),
-                contentAlignment = Alignment.Center,
+        }
+        if (withHelpeditsAndData == true) {
+            Column(
+                modifier = Modifier.weight(1f)
             ) {
-                Text(job.description, style = MaterialTheme.typography.titleMedium, color = darkCean)
+                Row(
+                    modifier = Modifier
+                        .align(Alignment.End),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    Text(
+                        text = "10",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = yellow,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Icon(
+                        imageVector = Icons.Filled.ThumbUp,
+                        contentDescription = "Ícone de positivo",
+                        tint = yellow
+                    )
+                }
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.End),
+                    text = "Data: ${job.data}",
+                    style = MaterialTheme.typography.titleSmall
+                )
             }
-
         }
     }
 }
