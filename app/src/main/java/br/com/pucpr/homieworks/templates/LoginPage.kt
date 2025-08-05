@@ -25,7 +25,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import br.com.pucpr.homieworks.R
 import br.com.pucpr.homieworks.templates.util.GenericButton
 import br.com.pucpr.homieworks.templates.util.InputText
@@ -123,9 +122,8 @@ fun LoginPage(
                     ) {
                         Text(
                             text = "Clique aqui se esqueceu sua senha",
-                            fontSize = 15.sp,
                             color = superLightCean,
-                            style = MaterialTheme.typography.displayMedium,
+                            style = MaterialTheme.typography.bodyLarge,
                         )
                     }
                 }

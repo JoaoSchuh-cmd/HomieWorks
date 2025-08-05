@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AppNavHost(navController: NavHostController = rememberNavController()) {
-    NavHost(navController = navController, startDestination = Screen.Login.route) {
+    NavHost(navController = navController, startDestination = Screen.Recovery.route) {
         composable(Screen.Login.route) {
             LoginPage(
                 onLoginSuccess = { navController.navigate(Screen.Feed.route) },
@@ -52,7 +52,8 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
         }
         composable(Screen.Recovery.route) {
             RecoveryPage(
-                onAlreadyHaveAccount = { navController.navigate(Screen.Login.route) }
+                onAlreadyHaveAccount = { navController.navigate(Screen.Login.route) },
+                onSuccssesRecovery = { navController.navigate(Screen.Login.route) }
             )
         }
         composable(Screen.MyJobs.route) {
