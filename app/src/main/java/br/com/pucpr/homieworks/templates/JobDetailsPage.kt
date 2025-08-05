@@ -116,7 +116,7 @@ fun JobDetailsFooter() {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         GenericButton(
-            "Recusar",
+            text = "Recusar",
             icon = {Icon(
                 imageVector = Icons.Default.Cancel,
                 contentDescription = "Ícone de x",
@@ -125,7 +125,7 @@ fun JobDetailsFooter() {
             containerColor = lightRed
         )
         GenericButton(
-            "Aceitar",
+            text = "Aceitar",
             icon = {Icon(
                 imageVector = Icons.Default.CheckCircle,
                 contentDescription = "Ícone de check",

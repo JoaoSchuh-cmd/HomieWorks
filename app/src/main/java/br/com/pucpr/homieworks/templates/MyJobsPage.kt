@@ -8,7 +8,6 @@ import br.com.pucpr.homieworks.templates.util.GenericPage
 import br.com.pucpr.homieworks.templates.util.InfiniteAutoScrollList
 import br.com.pucpr.homieworks.templates.util.SearchBar
 import br.com.pucpr.homieworks.templates.util.SessionHeader
-import br.com.pucpr.homieworks.ui.theme.darkCean
 
 @Composable
 fun MyJobsPage() {
@@ -41,10 +40,7 @@ fun MyJobsContent() {
         items = jobs,
         scrollDelayMs = 3000L,
         itemContent = { job ->
-            Card(
-                job = job,
-                backgroundColor = darkCean
-            )
+            Card(job = job)
         },
     )
 }

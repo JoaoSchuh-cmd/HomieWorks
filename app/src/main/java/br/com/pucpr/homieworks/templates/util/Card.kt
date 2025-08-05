@@ -1,12 +1,15 @@
 package br.com.pucpr.homieworks.templates.util
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -24,14 +27,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import br.com.pucpr.homieworks.data.Job
 import br.com.pucpr.homieworks.ui.theme.darkCean
-import br.com.pucpr.homieworks.ui.theme.mediumCean
 import br.com.pucpr.homieworks.ui.theme.superLightCean
 import br.com.pucpr.homieworks.ui.theme.yellow
 
 @Composable
 fun Card(
     job: Job,
-    backgroundColor: Color = mediumCean,
+    backgroundColor: Color = darkCean,
     withHelpeditsAndData: Boolean = true
 ) {
     val fontColor = Color.White
@@ -42,18 +44,29 @@ fun Card(
             .height(180.dp),
         elevation = CardDefaults.cardElevation(8.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = backgroundColor, contentColor = fontColor)
+        colors = CardDefaults.cardColors(containerColor = backgroundColor, contentColor = fontColor),
     ) {
-        CardHeader(withHelpeditsAndData, job)
-
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .fillMaxHeight()
+                .padding(16.dp)
                 .height(50.dp)
-                .background(color = superLightCean, shape = RoundedCornerShape(16.dp)),
-            contentAlignment = Alignment.Center,
+                .background(color = backgroundColor)
+                .align(Alignment.CenterHorizontally),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(job.description, style = MaterialTheme.typography.titleMedium, color = darkCean)
+            CardHeader(withHelpeditsAndData, job)
+            Box(
+                modifier = Modifier
+                    .border(color = Color.White, shape = RoundedCornerShape(16.dp), width = 2.dp)
+                    .background(color = superLightCean.copy(alpha = 0.2f), shape = RoundedCornerShape(16.dp))
+                    .fillMaxHeight()
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(job.description, style = MaterialTheme.typography.titleMedium, color = Color.White)
+            }
         }
     }
 }

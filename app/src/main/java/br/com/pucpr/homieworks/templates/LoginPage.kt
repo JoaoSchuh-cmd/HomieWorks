@@ -34,7 +34,11 @@ import br.com.pucpr.homieworks.ui.theme.darkCean
 import br.com.pucpr.homieworks.ui.theme.superLightCean
 
 @Composable
-fun LoginPage() {
+fun LoginPage(
+    onLoginSuccess: () -> Unit,
+    onSignUp: () -> Unit,
+    onForgotPassword: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -67,10 +71,11 @@ fun LoginPage() {
                         Icon(
                             imageVector = Icons.Filled.Mail,
                             contentDescription = "Ícone de e-mail",
-                            tint = Color.White
+                            tint = superLightCean
                         )
                     },
                     isSecret = false,
+                    fontColor = superLightCean,
                     backGroundColor = darkCean
                 )
 
@@ -82,10 +87,11 @@ fun LoginPage() {
                         Icon(
                             imageVector = Icons.Filled.Lock,
                             contentDescription = "Ícone de senha",
-                            tint = Color.White
+                            tint = superLightCean
                         )
                     },
                     isSecret = true,
+                    fontColor = superLightCean,
                     backGroundColor = darkCean
                 )
             }
@@ -106,10 +112,11 @@ fun LoginPage() {
                         text = "Entrar",
                         textColor = darkCean,
                         containerColor = superLightCean,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = { onLoginSuccess() }
                     )
                     TextButton(
-                        onClick = {},
+                        onClick = { onForgotPassword() },
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
                             .fillMaxWidth()
@@ -124,8 +131,10 @@ fun LoginPage() {
                 }
                 GenericButton(
                     text = "Cadastrar",
-                    containerColor = darkCean,
-                    modifier = Modifier.fillMaxWidth()
+                    containerColor = Color.Black,
+                    textColor = superLightCean,
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = { onSignUp() }
                 )
             }
         }

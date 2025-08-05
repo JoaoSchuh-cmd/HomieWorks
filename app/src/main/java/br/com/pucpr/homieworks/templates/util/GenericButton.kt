@@ -18,14 +18,15 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun GenericButton(
+    modifier: Modifier = Modifier.wrapContentWidth(),
     text: String,
     icon: (@Composable (() -> Unit))? = null,
     containerColor: Color,
     textColor: Color = Color.White,
-    modifier: Modifier = Modifier.wrapContentWidth()
+    onClick: () -> Unit = {}
 ) {
     Button(
-        onClick = {},
+        onClick = onClick,
         colors = ButtonDefaults.buttonColors(
             contentColor = textColor,
             containerColor = containerColor

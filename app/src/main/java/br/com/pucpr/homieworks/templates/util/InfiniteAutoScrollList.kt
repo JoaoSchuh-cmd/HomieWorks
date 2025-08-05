@@ -2,8 +2,7 @@ package br.com.pucpr.homieworks.templates.util
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -34,20 +33,16 @@ fun <T> InfiniteAutoScrollList(
         }
     }
 
-    BoxWithConstraints {
-        val height = maxHeight * 0.9f
-
-        LazyColumn(
-            state = listState,
-            modifier = Modifier
-                .height(height)
-                .background(color = backgroundColor, shape = RoundedCornerShape(16.dp))
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            items(items) { item ->
-                itemContent(item)
-            }
+    LazyColumn(
+        state = listState,
+        modifier = Modifier
+            .fillMaxHeight(0.9f)
+            .background(color = backgroundColor, shape = RoundedCornerShape(16.dp))
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(items) { item ->
+            itemContent(item)
         }
     }
 

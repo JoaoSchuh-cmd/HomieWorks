@@ -5,20 +5,25 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Flag
+import androidx.compose.material.icons.filled.LocalPostOffice
+import androidx.compose.material.icons.filled.LocationCity
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Map
+import androidx.compose.material.icons.filled.Numbers
+import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.rounded.Face
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -41,7 +46,11 @@ import br.com.pucpr.homieworks.ui.theme.lightRed
 import br.com.pucpr.homieworks.ui.theme.superLightCean
 
 @Composable
-fun SignUpPage() {
+fun SignUpPage(
+    onAlreadyHaveAccount : () -> Unit,
+    onCancel: () -> Unit,
+    onSignUpSuccess: () -> Unit
+) {
     var session by remember { mutableIntStateOf(1) }
 
     Box(
@@ -56,8 +65,13 @@ fun SignUpPage() {
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             SignUpHeader(session)
-            InputForm(session)
-            SignUpFooter(session, onSessionChange = { session = it })
+            SignUpContainer(
+                session = session,
+                onSessionChange = { session = it },
+                onCancel = onCancel,
+                onSignUpSuccess = onSignUpSuccess
+            )
+            SignUpFooter(onAlreadyHaveAccount = onAlreadyHaveAccount)
         }
     }
 }
@@ -72,9 +86,9 @@ fun SignUpHeader(session: Int) {
     ) {
         Text(
             text ="Cadastrar",
-            fontSize = 36.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black
+            color = Color.Black,
+            style = MaterialTheme.typography.headlineLarge
         )
         if (session == 1) SignUpInfo("Pessoais", 1) else SignUpInfo("Endereço", 2)
     }
@@ -104,13 +118,19 @@ fun SignUpInfo(label: String, session: Int) {
 }
 
 @Composable
-fun InputForm(session: Int) {
+fun SignUpContainer(
+    session: Int,
+    onSessionChange: (Int) -> Unit,
+    onCancel: () -> Unit,
+    onSignUpSuccess: () -> Unit
+) {
     Column(
-        modifier = Modifier
-            .wrapContentHeight(),
+        modifier = Modifier.wrapContentHeight(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-       if (session == 1) PersonalInfoForm() else AddressInfoForm()
+        if (session == 1) PersonalInfoForm() else AddressInfoForm()
+
+        if (session == 1) PersonalInfoFooter(onSessionChange = onSessionChange, onCancel = onCancel) else AddressInfoFooter(onSessionChange, onSignUpSuccess)
     }
 }
 
@@ -121,28 +141,52 @@ fun PersonalInfoForm() {
 
     InputText(
         label = "Nome",
-        leadingIcon = null,
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Rounded.Face,
+                tint = fontColor,
+                contentDescription = "Ícone de face"
+            )
+        },
         isSecret = false,
         backGroundColor = backGroundColor,
-        fontColor = fontColor
+        fontColor = fontColor,
     )
     InputText(
         label = "Celular",
-        leadingIcon = null,
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Phone,
+                tint = fontColor,
+                contentDescription = "Ícone de telefone"
+            )
+        },
         isSecret = false,
         backGroundColor = backGroundColor,
         fontColor = fontColor
     )
     InputText(
-        label = "Nome de usuário",
-        leadingIcon = null,
+        label = "E-mail",
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Email,
+                tint = fontColor,
+                contentDescription = "Ícone de e-mail"
+            )
+        },
         isSecret = false,
         backGroundColor = backGroundColor,
         fontColor = fontColor
     )
     InputText(
         label = "Senha",
-        leadingIcon = null,
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Lock,
+                tint = fontColor,
+                contentDescription = "Ícone de cadeado"
+            )
+        },
         isSecret = true,
         backGroundColor = backGroundColor,
         fontColor = fontColor
@@ -156,35 +200,65 @@ fun AddressInfoForm() {
 
     InputText(
         label = "Rua",
-        leadingIcon = null,
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Map,
+                contentDescription = "Ícone de mapa",
+                tint = fontColor
+            )
+        },
         isSecret = false,
         backGroundColor = backgroundColor,
         fontColor = fontColor
     )
     InputText(
-        label = "Numéro",
-        leadingIcon = null,
+        label = "Número",
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Numbers,
+                tint = fontColor,
+                contentDescription = "Ícone de número"
+            )
+        },
         isSecret = false,
         backGroundColor = backgroundColor,
         fontColor = fontColor
     )
     InputText(
         label = "Cidade",
-        leadingIcon = null,
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.LocationCity,
+                contentDescription = "Ícone de cidade",
+                tint = fontColor
+            )
+        },
         isSecret = false,
         backGroundColor = backgroundColor,
         fontColor = fontColor
     )
     InputText(
         label = "Estado",
-        leadingIcon = null,
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Flag,
+                contentDescription = "Ícone de estado",
+                tint = fontColor
+            )
+        },
         isSecret = true,
         backGroundColor = backgroundColor,
         fontColor = fontColor
     )
     InputText(
         label = "CEP",
-        leadingIcon = null,
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.LocalPostOffice,
+                contentDescription = "Ícone de CEP",
+                tint = fontColor
+            )
+        },
         isSecret = false,
         backGroundColor = backgroundColor,
         fontColor = fontColor
@@ -192,26 +266,18 @@ fun AddressInfoForm() {
 }
 
 @Composable
-fun SignUpFooter(session: Int, onSessionChange: (Int) -> Unit) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(),
-        verticalArrangement = Arrangement.SpaceBetween
-    ) {
-        if (session == 1) PersonalInfoFooter(onSessionChange = onSessionChange) else AddressInfoFooter(onSessionChange)
-
-        GenericButton(
-            textColor = Color.White,
-            containerColor = lightCean,
-            text = "Eu já possuo uma conta...",
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
+fun SignUpFooter(onAlreadyHaveAccount: () -> Unit, ) {
+    GenericButton(
+        textColor = Color.White,
+        containerColor = lightCean,
+        text = "Eu já possuo uma conta...",
+        modifier = Modifier.fillMaxWidth(),
+        onClick = { onAlreadyHaveAccount() }
+    )
 }
 
 @Composable
-fun PersonalInfoFooter(onSessionChange: (Int) -> Unit) {
+fun PersonalInfoFooter(onSessionChange: (Int) -> Unit, onCancel: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -227,46 +293,43 @@ fun PersonalInfoFooter(onSessionChange: (Int) -> Unit) {
                         .size(20.dp)
                 )
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            onClick = { onSessionChange(2) }
         )
         GenericButton(
             text = "Cancelar",
             containerColor = lightRed,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            onClick = { onCancel() }
         )
     }
 }
 
 @Composable
-fun AddressInfoFooter(onSessionChange: (Int) -> Unit) {
+fun AddressInfoFooter(onSessionChange: (Int) -> Unit, onSignUpSuccess: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Button(
-            modifier = Modifier
-                .wrapContentWidth()
-                .height(60.dp),
-            onClick = {onSessionChange(1)},
-            colors = ButtonDefaults.buttonColors(containerColor = lightRed, contentColor = Color.White)
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                contentDescription = "Seta para a esquerda",
-                modifier = Modifier
-                    .size(20.dp)
-            )
-            Text(text = "Voltar", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-        }
-        Button(
-            modifier = Modifier
-                .wrapContentWidth()
-                .height(60.dp),
-            onClick = {},
-            colors = ButtonDefaults.buttonColors(containerColor = lightGreen, contentColor = Color.White)
-        ) {
-            Text(text = "Finalizado", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-
-        }
+        GenericButton(
+            modifier = Modifier.weight(1f),
+            text = "Voltar",
+            icon = {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                    contentDescription = "Seta para a esquerda",
+                    modifier = Modifier
+                        .size(20.dp)
+                )
+            },
+            containerColor = lightRed,
+            onClick = { onSessionChange(1) }
+        )
+        GenericButton(
+            modifier = Modifier.weight(1f),
+            containerColor = lightGreen,
+            text = "Finalizado",
+            onClick = { onSignUpSuccess() }
+        )
     }
 }

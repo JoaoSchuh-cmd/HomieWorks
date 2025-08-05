@@ -27,7 +27,7 @@ import br.com.pucpr.homieworks.ui.theme.yellow
 @Composable
 fun SessionHeader(
     text: String,
-    is_complete: Boolean = true,
+    isComplete: Boolean = true,
 ) {
     val fontColor = Color.White
 
@@ -60,7 +60,7 @@ fun SessionHeader(
                 )
             }
 
-            if (is_complete) {
+            if (isComplete) {
                 Row(
                     modifier = Modifier
                         .wrapContentWidth(),
