@@ -33,22 +33,30 @@ import br.com.pucpr.homieworks.ui.theme.superLightCean
 import br.com.pucpr.homieworks.ui.theme.yellow
 
 @Composable
-fun NewJobPage() {
+fun NewJobPage(
+    onProfileIconClick: () -> Unit,
+    onMenuIconClick: () -> Unit
+) {
     GenericPage(
-        { NewJobHeader() },
+        { NewJobHeader(onProfileIconClick = onProfileIconClick, onMenuIconClick = onMenuIconClick) },
         { NewJobContent() },
         { NewJobFooter() }
     )
 }
 
 @Composable
-fun NewJobHeader() {
-    SessionHeader("Novo trabalho")
+fun NewJobHeader(onProfileIconClick: () -> Unit, onMenuIconClick: () -> Unit) {
+    SessionHeader(
+        text = "Novo trabalho",
+        onProfileIconClick = onProfileIconClick,
+        onMenuIconClick = onMenuIconClick
+    )
 }
 
 @Composable
 fun NewJobContent() {
     val job = Job(
+        title = "Título do trabalho",
         userName= "João Schuh",
         userAddress = "Rua fictícia, 295, M.C.R - PR",
         data = "",

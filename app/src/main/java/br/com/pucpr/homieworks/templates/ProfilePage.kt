@@ -41,16 +41,22 @@ import br.com.pucpr.homieworks.ui.theme.darkCean
 import br.com.pucpr.homieworks.ui.theme.superLightCean
 
 @Composable
-fun ProfilePage() {
+fun ProfilePage(
+    onProfileIconClick: () -> Unit,
+    onMenuIconClick: () -> Unit
+) {
     GenericPage(
-        { ProfileHeader() },
+        { ProfileHeader(onProfileIconClick = onProfileIconClick, onMenuIconClick = onMenuIconClick) },
         { ProfileContent() },
         { ProfileFooter() }
     )
 }
 
 @Composable
-fun ProfileHeader() {
+fun ProfileHeader(
+    onProfileIconClick: () -> Unit,
+    onMenuIconClick: () -> Unit
+) {
     val helpedits = 0
     val workDone = 0
     val fontColor = Color.White
@@ -61,7 +67,11 @@ fun ProfileHeader() {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Column {
-            SessionHeader("Profile")
+            SessionHeader(
+                text = "Profile",
+                onProfileIconClick = onProfileIconClick,
+                onMenuIconClick = onMenuIconClick
+            )
             Text(
                 text="Helpedits:",
                 style = MaterialTheme.typography.titleMedium,

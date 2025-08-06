@@ -10,24 +10,34 @@ import br.com.pucpr.homieworks.templates.util.InfiniteAutoScrollList
 import br.com.pucpr.homieworks.templates.util.SearchBar
 
 @Composable
-fun FeedPage() {
+fun FeedPage(
+    onCardClick: () -> Unit,
+    onProfileIconClick: () -> Unit,
+    onMenuIconClick: () -> Unit,
+    onAddJobClick: () -> Unit
+) {
     GenericPage(
-        { FeedHeader() },
-        { FeedContent() },
+        { FeedHeader(onProfileIconClick = onProfileIconClick, onMenuIconClick = onMenuIconClick) },
+        { FeedContent(onCardClick, onAddJobClick) },
         { FeedFooter() }
     )
 }
 
 @Composable
-fun FeedHeader() {
-    SessionHeader("Feed")
+fun FeedHeader(onProfileIconClick: () -> Unit, onMenuIconClick: () -> Unit) {
+    SessionHeader(
+        text = "Feed",
+        onProfileIconClick = onProfileIconClick,
+        onMenuIconClick = onMenuIconClick
+    )
 }
 
 @Composable
-fun FeedContent() {
+fun FeedContent(onCardClick: () -> Unit, onAddJobClick: () -> Unit) {
     val jobs = remember {
         List(100) { i ->
             Job(
+                title = "Título do trabalho",
                 userName = "Teste",
                 userAddress = "Teste de endereço",
                 description = "Cortar a grama",
@@ -40,8 +50,9 @@ fun FeedContent() {
         items = jobs,
         scrollDelayMs = 3000L,
         itemContent = { job ->
-            Card(job)
-        }
+            Card(job, onCardClik = onCardClick)
+        },
+        onAddJobClick = { onAddJobClick() }
     )
 }
 
