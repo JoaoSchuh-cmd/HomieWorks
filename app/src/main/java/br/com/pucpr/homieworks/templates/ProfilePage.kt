@@ -1,15 +1,12 @@
 package br.com.pucpr.homieworks.templates
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.DeleteForever
@@ -19,7 +16,6 @@ import androidx.compose.material.icons.rounded.LocationOn
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.Phone
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -31,13 +27,12 @@ import br.com.pucpr.homieworks.templates.util.InputText
 import br.com.pucpr.homieworks.templates.util.SessionHeader
 import br.com.pucpr.homieworks.ui.theme.yellow
 import androidx.compose.material.icons.rounded.Face
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.font.FontWeight
+import br.com.pucpr.homieworks.templates.util.GenericButton
 import br.com.pucpr.homieworks.templates.util.GenericPage
 import br.com.pucpr.homieworks.ui.theme.lightGreen
 import br.com.pucpr.homieworks.ui.theme.lightRed
@@ -169,71 +164,54 @@ fun ProfileFooter() {
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Button(
-                modifier = Modifier
-                    .wrapContentWidth()
-                    .height(60.dp),
-                colors = ButtonDefaults.buttonColors(lightRed),
-                onClick = {}
-            ) {
-                Text(
-                    text = "Desconectar",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ExitToApp,
-                    contentDescription = "Ícone de saída",
-                    tint = Color.White
-                )
-            }
-            Button(
-                modifier = Modifier
-                    .wrapContentWidth()
-                    .height(60.dp),
-                colors = ButtonDefaults.buttonColors(lightGreen),
-                onClick = {}
-            ) {
-                Text(
-                    text = "Salvar",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
-                Icon(
-                    imageVector = Icons.Filled.Save,
-                    contentDescription = "Ícone de disquete",
-                    tint = Color.White
-                )
-            }
+            GenericButton(
+                modifier = Modifier.weight(1f),
+                text = "Sair",
+                icon = {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                        contentDescription = "Ícone de saída",
+                        tint = Color.White
+                    )
+                },
+                onClick = {},
+                containerColor = lightRed,
+                textColor = Color.White
+            )
+            GenericButton(
+                modifier = Modifier.weight(1f),
+                text = "Salvar",
+                icon = {
+                    Icon(
+                        imageVector = Icons.Filled.Save,
+                        contentDescription = "Ícone de disquete",
+                        tint = Color.White
+                    )
+                },
+                containerColor = lightGreen,
+                onClick = {},
+                textColor = Color.White
+            )
         }
         Row(
             modifier = Modifier.fillMaxWidth()
         ) {
-            OutlinedButton(
-                modifier = Modifier
-                    .height(60.dp)
-                    .fillMaxWidth(),
+            GenericButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = "Excluir conta",
+                containerColor = Color.Black,
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.DeleteForever,
+                        contentDescription = "Ícone de lixeira"
+                    )
+                },
                 onClick = {},
-                colors = ButtonDefaults.outlinedButtonColors(
-                    containerColor = Color.Black,
-                    contentColor = lightRed
-                ),
-                border = BorderStroke(2.dp, lightRed)
-            ) {
-                Text(
-                    text = "Excluir conta",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                )
-                Icon(
-                    imageVector = Icons.Default.DeleteForever,
-                    contentDescription = "Ícone de lixeira"
-                )
-            }
+                textColor = lightRed,
+
+            )
         }
     }
 }
