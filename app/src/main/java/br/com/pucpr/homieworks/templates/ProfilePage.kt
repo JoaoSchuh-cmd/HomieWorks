@@ -33,6 +33,10 @@ import br.com.pucpr.homieworks.ui.theme.yellow
 import androidx.compose.material.icons.rounded.Face
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.font.FontWeight
 import br.com.pucpr.homieworks.templates.util.GenericPage
 import br.com.pucpr.homieworks.ui.theme.lightGreen
@@ -43,10 +47,18 @@ import br.com.pucpr.homieworks.ui.theme.superLightCean
 @Composable
 fun ProfilePage(
     onProfileIconClick: () -> Unit,
-    onMenuIconClick: () -> Unit
+    onMenuIconClick: (String) -> Unit
 ) {
+    var option by remember { mutableStateOf("profile") }
+
     GenericPage(
-        { ProfileHeader(onProfileIconClick = onProfileIconClick, onMenuIconClick = onMenuIconClick) },
+        { ProfileHeader(
+            onProfileIconClick = onProfileIconClick,
+            onMenuOptionSelected = { selected ->
+                option = selected
+                onMenuIconClick(selected)
+            }
+        ) },
         { ProfileContent() },
         { ProfileFooter() }
     )
@@ -55,7 +67,7 @@ fun ProfilePage(
 @Composable
 fun ProfileHeader(
     onProfileIconClick: () -> Unit,
-    onMenuIconClick: () -> Unit
+    onMenuOptionSelected: (String) -> Unit
 ) {
     val helpedits = 0
     val workDone = 0
@@ -70,7 +82,7 @@ fun ProfileHeader(
             SessionHeader(
                 text = "Profile",
                 onProfileIconClick = onProfileIconClick,
-                onMenuIconClick = onMenuIconClick
+                onMenuIconClick = onMenuOptionSelected
             )
             Text(
                 text="Helpedits:",

@@ -1,9 +1,9 @@
 package br.com.pucpr.homieworks.templates
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import br.com.pucpr.homieworks.data.Job
 import br.com.pucpr.homieworks.templates.util.Card
@@ -13,16 +13,15 @@ import br.com.pucpr.homieworks.templates.util.SearchBar
 import br.com.pucpr.homieworks.templates.util.SessionHeader
 
 @Composable
-fun MyJobsPage(
+fun AcceptedJobsPage(
     onCardClick: () -> Unit,
     onProfileIconClick: () -> Unit,
     onMenuIconClick: (String) -> Unit,
-    onAddJobClick: () -> Unit
 ) {
-    var option by remember { mutableStateOf("feed") }
+    var option by remember { mutableStateOf("accepted") }
 
     GenericPage(
-        { MyJobsHeader(
+        header = { AcceptedJobsHeader(
 //                selectedOption = option,
             onProfileIconClick = onProfileIconClick,
             onMenuOptionSelected = { selected ->
@@ -30,19 +29,19 @@ fun MyJobsPage(
                 onMenuIconClick(selected)
             }
         ) },
-        { MyJobsContent(onCardClick, onAddJobClick) },
-        { MyJobsFooter() }
+        content = { AcceptedJobsContent(onCardClick) },
+        footer = { AcceptedJobsFooter() }
     )
 }
 
 @Composable
-fun MyJobsHeader(
+fun AcceptedJobsHeader(
 //    selectedOption: String,
     onProfileIconClick: () -> Unit,
     onMenuOptionSelected: (String) -> Unit
 ) {
     SessionHeader(
-        text = "Meus anúncios",
+        text = "Trabalhos aceitos",
 //        selectedMenuOption = selectedOption,
         onProfileIconClick = onProfileIconClick,
         onMenuIconClick = onMenuOptionSelected
@@ -50,7 +49,7 @@ fun MyJobsHeader(
 }
 
 @Composable
-fun MyJobsContent(onCardClick: () -> Unit, onAddJobClick: () -> Unit) {
+fun AcceptedJobsContent(onCardClick: () -> Unit) {
     val jobs = remember {
         List(100) { i ->
             Job(
@@ -69,11 +68,11 @@ fun MyJobsContent(onCardClick: () -> Unit, onAddJobClick: () -> Unit) {
         itemContent = { job ->
             Card(job = job, onCardClik = onCardClick)
         },
-        onAddJobClick = { onAddJobClick() }
+        onAddJobClick = {}
     )
 }
 
 @Composable
-fun MyJobsFooter() {
+fun AcceptedJobsFooter() {
     SearchBar()
 }

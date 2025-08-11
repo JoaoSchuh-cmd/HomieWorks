@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowLeft
 import androidx.compose.material.icons.filled.Cancel
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Whatsapp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,26 +29,25 @@ import br.com.pucpr.homieworks.data.Job
 import br.com.pucpr.homieworks.templates.util.CardHeader
 import br.com.pucpr.homieworks.templates.util.GenericButton
 import br.com.pucpr.homieworks.templates.util.GenericPage
-import br.com.pucpr.homieworks.ui.theme.lightGreen
+import br.com.pucpr.homieworks.ui.theme.darkCean
 import br.com.pucpr.homieworks.ui.theme.lightRed
 import br.com.pucpr.homieworks.ui.theme.mediumCean
-import br.com.pucpr.homieworks.ui.theme.darkCean
 import br.com.pucpr.homieworks.ui.theme.superLightCean
 
 @Composable
-fun JobDetailsPage(
+fun AcceptedJobsDetailsPage(
     job: Job,
     onBackClick: () -> Unit
 ) {
     GenericPage(
-        { JobDetailsHeader(onBackClick) },
-        { JobDetailsContent(job) },
-        { JobDetailsFooter() }
+        { AcceptedJobsDetailsHeader(onBackClick) },
+        { AcceptedJobsDetailsContent(job) },
+        { AcceptedJobsDetailsFooter(onBackClick) }
     )
 }
 
 @Composable
-fun JobDetailsHeader(onBackClick: () -> Unit) {
+fun AcceptedJobsDetailsHeader(onBackClick: () -> Unit) {
     Row(
         verticalAlignment = Alignment.Top
     ) {
@@ -78,7 +76,7 @@ fun JobDetailsHeader(onBackClick: () -> Unit) {
 }
 
 @Composable
-fun JobDetailsContent(job: Job) {
+fun AcceptedJobsDetailsContent(job: Job) {
     Column(
         modifier = Modifier
             .fillMaxHeight(0.9f)
@@ -137,44 +135,25 @@ fun JobDetailsContent(job: Job) {
 }
 
 @Composable
-fun JobDetailsFooter() {
+fun AcceptedJobsDetailsFooter(
+    onBackClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         GenericButton(
-            text = "Recusar",
-            icon = {Icon(
+            text = "Cancelar trabalho",
+            icon = {
+                Icon(
                 imageVector = Icons.Default.Cancel,
-                contentDescription = "Ícone de x",
-                tint = Color.White
-            )},
-            containerColor = lightRed,
-            modifier = Modifier.weight(1f)
-        )
-//        IconButton(
-//            onClick = { onBackToFeedClick() },
-//            content = {
-//                Icon(
-//                    imageVector = Icons.Default.ArrowDropDownCircle,
-//                    tint = Color.Black,
-//                    contentDescription = "Ícone de seta para baixo dentor de um círculo",
-//                    modifier = Modifier.size(80.dp)
-//                )
-//            },
-//            colors = IconButtonDefaults.iconButtonColors(
-//                containerColor = superLightCean,
-//            ),
-//        )
-        GenericButton(
-            text = "Aceitar",
-            icon = {Icon(
-                imageVector = Icons.Default.CheckCircle,
                 contentDescription = "Ícone de check",
                 tint = Color.White
-            )},
-            containerColor = lightGreen,
+            )
+            },
+            containerColor = lightRed,
+            onClick = onBackClick,
             modifier = Modifier.weight(1f)
         )
     }

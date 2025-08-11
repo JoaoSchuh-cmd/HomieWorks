@@ -5,8 +5,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import br.com.pucpr.homieJobs.templates.NewJobPage
+import br.com.pucpr.homieworks.templates.NewJobPage
 import br.com.pucpr.homieworks.data.Job
+import br.com.pucpr.homieworks.templates.AcceptedJobsDetailsPage
+import br.com.pucpr.homieworks.templates.AcceptedJobsPage
 import br.com.pucpr.homieworks.templates.FeedPage
 import br.com.pucpr.homieworks.templates.JobDetailsPage
 import br.com.pucpr.homieworks.templates.LoginPage
@@ -17,7 +19,15 @@ import br.com.pucpr.homieworks.templates.SignUpPage
 
 @Composable
 fun AppNavHost(navController: NavHostController = rememberNavController()) {
-    NavHost(navController = navController, startDestination = Screen.Login.route) {
+    val job = Job(
+        title = "Título do trabalho",
+        userName = "joao_schuh",
+        description = "Uma descrição curta do trabalho a ser realizado.",
+        userAddress = "Rua fictícia, 999, M.C.R - PR",
+        data = "31/07/2052"
+    )
+
+    NavHost(navController = navController, startDestination = Screen.Feed.route) {
         composable(Screen.Login.route) {
             LoginPage(
                 onLoginSuccess = { navController.navigate(Screen.Feed.route) },
@@ -29,7 +39,13 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
             FeedPage(
                 onCardClick = { navController.navigate(Screen.JobDetails.route) },
                 onProfileIconClick = { navController.navigate(Screen.Profile.route) },
-                onMenuIconClick = {  },
+                onMenuIconClick = { option: String ->
+                    when(option) {
+                        "feed" -> { navController.navigate(Screen.Feed.route) }
+                        "myjobs" -> { navController.navigate(Screen.MyJobs.route) }
+                        "acceptedjobs" -> { navController.navigate(Screen.Accepted.route) }
+                    }
+                },
                 onAddJobClick = { navController.navigate(Screen.NewJob.route) }
             )
         }
@@ -43,27 +59,32 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
             MyJobsPage(
                 onCardClick = { navController.navigate(Screen.JobDetails.route) },
                 onProfileIconClick = { navController.navigate(Screen.Profile.route) },
-                onMenuIconClick = {  },
+                onMenuIconClick = { option: String ->
+                    when(option) {
+                        "feed" -> { navController.navigate(Screen.Feed.route) }
+                        "myjobs" -> { navController.navigate(Screen.MyJobs.route) }
+                        "acceptedjobs" -> { navController.navigate(Screen.Accepted.route) }
+                    }
+                },
                 onAddJobClick = { navController.navigate(Screen.NewJob.route) }
             )
         }
         composable(Screen.NewJob.route) {
             NewJobPage(
                 onProfileIconClick = { navController.navigate(Screen.Profile.route) },
-                onMenuIconClick = {  }
+                onMenuIconClick = { option: String ->
+                    when(option) {
+                        "feed" -> { navController.navigate(Screen.Feed.route) }
+                        "myjobs" -> { navController.navigate(Screen.MyJobs.route) }
+                        "acceptedjobs" -> { navController.navigate(Screen.Accepted.route) }
+                    }
+                },
             )
         }
         composable(Screen.JobDetails.route) {
-            val job = Job(
-                title = "Título do trabalho",
-                userName = "joao_schuh",
-                description = "Uma descrição curta do trabalho a ser realizado.",
-                userAddress = "Rua fictícia, 999, M.C.R - PR",
-                data = "31/07/2052"
-            )
             JobDetailsPage(
                 job,
-                onBackToFeedClick = { navController.navigate(Screen.Feed.route) }
+                onBackClick = { navController.navigate(Screen.Feed.route) }
             )
         }
         composable(Screen.SignUp.route) {
@@ -74,10 +95,34 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
             )
         }
         composable(Screen.Profile.route) {
-            navController.popBackStack()
             ProfilePage(
                 onProfileIconClick = { navController.navigate(Screen.Profile.route) },
-                onMenuIconClick = {  }
+                onMenuIconClick = { option: String ->
+                    when(option) {
+                        "feed" -> { navController.navigate(Screen.Feed.route) }
+                        "myjobs" -> { navController.navigate(Screen.MyJobs.route) }
+                        "acceptedjobs" -> { navController.navigate(Screen.Accepted.route) }
+                    }
+                },
+            )
+        }
+        composable(Screen.Accepted.route) {
+            AcceptedJobsPage(
+                onCardClick = { navController.navigate(Screen.AcceptedDetails.route) },
+                onProfileIconClick = { navController.navigate(Screen.Profile.route) },
+                onMenuIconClick = { option: String ->
+                    when(option) {
+                        "feed" -> { navController.navigate(Screen.Feed.route) }
+                        "myjobs" -> { navController.navigate(Screen.MyJobs.route) }
+                        "acceptedjobs" -> { navController.navigate(Screen.Accepted.route) }
+                    }
+                },
+            )
+        }
+        composable(Screen.AcceptedDetails.route) {
+            AcceptedJobsDetailsPage(
+                job = job,
+                onBackClick = { navController.navigate(Screen.Accepted.route) }
             )
         }
     }

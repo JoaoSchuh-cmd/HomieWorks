@@ -1,4 +1,4 @@
-package br.com.pucpr.homieJobs.templates
+package br.com.pucpr.homieworks.templates
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +16,10 @@ import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Whatsapp
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -35,21 +39,32 @@ import br.com.pucpr.homieworks.ui.theme.yellow
 @Composable
 fun NewJobPage(
     onProfileIconClick: () -> Unit,
-    onMenuIconClick: () -> Unit
+    onMenuIconClick: (String) -> Unit
 ) {
+    var option by remember { mutableStateOf("newjob") }
+
     GenericPage(
-        { NewJobHeader(onProfileIconClick = onProfileIconClick, onMenuIconClick = onMenuIconClick) },
+        { NewJobHeader(
+            onProfileIconClick = onProfileIconClick,
+            onMenuOptionSelected = { selected ->
+                option = selected
+                onMenuIconClick(selected)
+            }
+        ) },
         { NewJobContent() },
         { NewJobFooter() }
     )
 }
 
 @Composable
-fun NewJobHeader(onProfileIconClick: () -> Unit, onMenuIconClick: () -> Unit) {
+fun NewJobHeader(
+    onProfileIconClick: () -> Unit,
+    onMenuOptionSelected: (String) -> Unit
+) {
     SessionHeader(
         text = "Novo trabalho",
         onProfileIconClick = onProfileIconClick,
-        onMenuIconClick = onMenuIconClick
+        onMenuIconClick = onMenuOptionSelected
     )
 }
 
@@ -150,7 +165,7 @@ fun NewJobFooter() {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) { 
+    ) {
         GenericButton(
             text = "Descartar",
             textColor = Color.White,

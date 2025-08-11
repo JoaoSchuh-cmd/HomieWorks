@@ -1,7 +1,10 @@
 package br.com.pucpr.homieworks.templates
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import br.com.pucpr.homieworks.data.Job
 import br.com.pucpr.homieworks.templates.util.Card
 import br.com.pucpr.homieworks.templates.util.GenericPage
@@ -13,24 +16,39 @@ import br.com.pucpr.homieworks.templates.util.SearchBar
 fun FeedPage(
     onCardClick: () -> Unit,
     onProfileIconClick: () -> Unit,
-    onMenuIconClick: () -> Unit,
+    onMenuIconClick: (String) -> Unit,
     onAddJobClick: () -> Unit
 ) {
+    var option by remember { mutableStateOf("feed") }
+
     GenericPage(
-        { FeedHeader(onProfileIconClick = onProfileIconClick, onMenuIconClick = onMenuIconClick) },
+        {
+            FeedHeader(
+                onProfileIconClick = onProfileIconClick,
+                onMenuOptionSelected = { selected ->
+                    option = selected
+                    onMenuIconClick(selected)
+                }
+            )
+        },
         { FeedContent(onCardClick, onAddJobClick) },
         { FeedFooter() }
     )
 }
 
+
 @Composable
-fun FeedHeader(onProfileIconClick: () -> Unit, onMenuIconClick: () -> Unit) {
+fun FeedHeader(
+    onProfileIconClick: () -> Unit,
+    onMenuOptionSelected: (String) -> Unit
+) {
     SessionHeader(
         text = "Feed",
         onProfileIconClick = onProfileIconClick,
-        onMenuIconClick = onMenuIconClick
+        onMenuIconClick = onMenuOptionSelected
     )
 }
+
 
 @Composable
 fun FeedContent(onCardClick: () -> Unit, onAddJobClick: () -> Unit) {

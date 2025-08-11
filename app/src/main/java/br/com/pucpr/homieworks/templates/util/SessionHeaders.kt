@@ -11,17 +11,24 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Handshake
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.rounded.AccountCircle
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import br.com.pucpr.homieworks.ui.theme.darkCean
 import br.com.pucpr.homieworks.ui.theme.yellow
 
 @Composable
@@ -29,9 +36,10 @@ fun SessionHeader(
     text: String,
     isComplete: Boolean = true,
     onProfileIconClick: () -> Unit,
-    onMenuIconClick: () -> Unit
+    onMenuIconClick: (String) -> Unit
 ) {
     val fontColor = Color.White
+    var expanded by remember { mutableStateOf(false) }
 
     Row(
         modifier = Modifier
@@ -50,11 +58,38 @@ fun SessionHeader(
                         contentDescription = "Ícone de menu",
                         tint = fontColor,
                     )
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false},
+                        containerColor = Color.White,
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(text = "Feed", color = darkCean, style = MaterialTheme.typography.titleSmall) },
+                            onClick = {
+                                onMenuIconClick("feed")
+                                expanded = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(text = "Meus anúncios", color = darkCean, style = MaterialTheme.typography.titleSmall) },
+                            onClick = {
+                                onMenuIconClick("myjobs")
+                                expanded = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(text = "Trabalhos aceitos", color = darkCean, style = MaterialTheme.typography.titleSmall) },
+                            onClick = {
+                                onMenuIconClick("acceptedjobs")
+                                expanded = false
+                            }
+                        )
+                    }
                 },
                 modifier = Modifier
                     .size(30.dp)
                     .align(Alignment.CenterVertically),
-                onClick = { onMenuIconClick() }
+                onClick = { expanded = !expanded }
             )
             Text(
                 text = text,
