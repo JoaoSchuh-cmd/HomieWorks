@@ -1,4 +1,4 @@
-package br.com.pucpr.homieworks.templates
+package br.com.pucpr.homieworks.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -12,9 +12,7 @@ import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.rounded.AccountCircle
-import androidx.compose.material.icons.rounded.LocationOn
 import androidx.compose.material.icons.rounded.Lock
-import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.Phone
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -23,38 +21,50 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import br.com.pucpr.homieworks.templates.util.InputText
-import br.com.pucpr.homieworks.templates.util.SessionHeader
+import br.com.pucpr.homieworks.view.util.InputText
+import br.com.pucpr.homieworks.view.util.SessionHeader
 import br.com.pucpr.homieworks.ui.theme.yellow
 import androidx.compose.material.icons.rounded.Face
+import androidx.compose.material.icons.rounded.Mail
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.font.FontWeight
-import br.com.pucpr.homieworks.templates.util.GenericButton
-import br.com.pucpr.homieworks.templates.util.GenericPage
+import androidx.navigation.NavController
+import br.com.pucpr.homieworks.Screen
+import br.com.pucpr.homieworks.view.util.GenericButton
+import br.com.pucpr.homieworks.view.util.GenericPage
 import br.com.pucpr.homieworks.ui.theme.lightGreen
 import br.com.pucpr.homieworks.ui.theme.lightRed
 import br.com.pucpr.homieworks.ui.theme.darkCean
 import br.com.pucpr.homieworks.ui.theme.superLightCean
+import br.com.pucpr.homieworks.viewmodel.ProfileViewModel
 
 @Composable
 fun ProfilePage(
-    onProfileIconClick: () -> Unit,
-    onMenuIconClick: (String) -> Unit
+   viewModel: ProfileViewModel,
+   navController: NavController
 ) {
     var option by remember { mutableStateOf("profile") }
 
     GenericPage(
         { ProfileHeader(
-            onProfileIconClick = onProfileIconClick,
+            onProfileIconClick = {
+                navController.navigate(Screen.Profile.route) {
+                    popUpTo(Screen.Profile.route) { inclusive = true }
+                }
+            },
             onMenuOptionSelected = { selected ->
                 option = selected
-                onMenuIconClick(selected)
+                when(option) {
+                    "feed" -> { navController.navigate(Screen.Feed.route) }
+                    "myjobs" -> { navController.navigate(Screen.MyJobs.route) }
+                    "acceptedjobs" -> { navController.navigate(Screen.Accepted.route) }
+                }
             }
         ) },
-        { ProfileContent() },
+        { ProfileContent(viewModel) },
         { ProfileFooter() }
     )
 }
@@ -113,45 +123,53 @@ fun ProfileHeader(
 }
 
 @Composable
-fun ProfileContent() {
+fun ProfileContent(viewModel: ProfileViewModel) {
     val fontColor = darkCean
     val backgroundColor = superLightCean
 
     InputText(
         label = "Nome",
+        value = viewModel.user.name,
+        onValueChange = { viewModel.updateName(it) },
         leadingIcon =  {Icon(imageVector = Icons.Rounded.Face, contentDescription = "Ícone de pessoa", tint = fontColor)},
         isSecret = false,
         backGroundColor = backgroundColor,
         fontColor = fontColor
     )
     InputText(
-        label = "Nome de usuário",
-        leadingIcon = {Icon(imageVector = Icons.Rounded.Person, contentDescription = "Ícone de pessoa", tint = fontColor)},
-        isSecret = false,
-        backGroundColor = backgroundColor,
-        fontColor = fontColor
-    )
-    InputText(
-        label = "Senha",
-        leadingIcon = {Icon(imageVector = Icons.Rounded.Lock, contentDescription = "Ícone de cadeado", tint = fontColor)},
-        isSecret = true,
-        backGroundColor = backgroundColor,
-        fontColor = fontColor
-    )
-    InputText(
         label = "Número de telefone",
+        value = viewModel.user.phoneNumber,
+        onValueChange = { viewModel.updatePhone(it) },
         leadingIcon = {Icon(imageVector = Icons.Rounded.Phone, contentDescription = "Ícone de telefone", tint = fontColor)},
         isSecret = true,
         backGroundColor = backgroundColor,
         fontColor = fontColor
     )
     InputText(
-        label = "Endereço",
-        leadingIcon = {Icon(imageVector = Icons.Rounded.LocationOn, contentDescription = "Ícone de telefone", tint = fontColor)},
+        label = "Email",
+        value = viewModel.user.email,
+        onValueChange = { viewModel.updateEmail(it) },
+        leadingIcon = {Icon(imageVector = Icons.Rounded.Mail, contentDescription = "Ícone de email", tint = fontColor)},
+        isSecret = false,
+        backGroundColor = backgroundColor,
+        fontColor = fontColor
+    )
+    InputText(
+        label = "Senha",
+        value = viewModel.user.userPassword,
+        onValueChange = { viewModel.updatePassword(it) },
+        leadingIcon = {Icon(imageVector = Icons.Rounded.Lock, contentDescription = "Ícone de cadeado", tint = fontColor)},
         isSecret = true,
         backGroundColor = backgroundColor,
         fontColor = fontColor
     )
+//    InputText(
+//        label = "Endereço",
+//        leadingIcon = {Icon(imageVector = Icons.Rounded.LocationOn, contentDescription = "Ícone de telefone", tint = fontColor)},
+//        isSecret = true,
+//        backGroundColor = backgroundColor,
+//        fontColor = fontColor
+//    )
 }
 
 @Composable

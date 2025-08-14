@@ -1,4 +1,4 @@
-package br.com.pucpr.homieworks.templates.util
+package br.com.pucpr.homieworks.view.util
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -28,7 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import br.com.pucpr.homieworks.data.Job
+import br.com.pucpr.homieworks.model.Job
 import br.com.pucpr.homieworks.ui.theme.darkCean
 import br.com.pucpr.homieworks.ui.theme.superLightCean
 import br.com.pucpr.homieworks.ui.theme.yellow

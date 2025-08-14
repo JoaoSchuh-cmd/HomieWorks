@@ -1,35 +1,51 @@
-package br.com.pucpr.homieworks.templates
+package br.com.pucpr.homieworks.view
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import br.com.pucpr.homieworks.data.Job
-import br.com.pucpr.homieworks.templates.util.Card
-import br.com.pucpr.homieworks.templates.util.GenericPage
-import br.com.pucpr.homieworks.templates.util.InfiniteAutoScrollList
-import br.com.pucpr.homieworks.templates.util.SearchBar
-import br.com.pucpr.homieworks.templates.util.SessionHeader
+import androidx.navigation.NavController
+import br.com.pucpr.homieworks.Screen
+import br.com.pucpr.homieworks.model.Job
+import br.com.pucpr.homieworks.view.util.Card
+import br.com.pucpr.homieworks.view.util.GenericPage
+import br.com.pucpr.homieworks.view.util.InfiniteAutoScrollList
+import br.com.pucpr.homieworks.view.util.SearchBar
+import br.com.pucpr.homieworks.view.util.SessionHeader
+import br.com.pucpr.homieworks.viewmodel.AcceptedJobsViewModel
 
 @Composable
 fun AcceptedJobsPage(
-    onCardClick: () -> Unit,
-    onProfileIconClick: () -> Unit,
-    onMenuIconClick: (String) -> Unit,
+    viewModel: AcceptedJobsViewModel,
+    navController: NavController
 ) {
     var option by remember { mutableStateOf("accepted") }
 
     GenericPage(
         header = { AcceptedJobsHeader(
 //                selectedOption = option,
-            onProfileIconClick = onProfileIconClick,
+            onProfileIconClick = {
+                navController.navigate(Screen.Profile.route) {
+                    popUpTo(Screen.Accepted.route) { inclusive = true }
+                }
+            },
             onMenuOptionSelected = { selected ->
                 option = selected
-                onMenuIconClick(selected)
+                when(option) {
+                    "feed" -> { navController.navigate(Screen.Feed.route) }
+                    "myjobs" -> { navController.navigate(Screen.MyJobs.route) }
+                    "acceptedjobs" -> { navController.navigate(Screen.Accepted.route) }
+                }
             }
         ) },
-        content = { AcceptedJobsContent(onCardClick) },
+        content = {
+            AcceptedJobsContent {
+                navController.navigate(Screen.AcceptedDetails.route) {
+                    popUpTo(Screen.Accepted.route) { inclusive = true }
+                }
+            }
+        },
         footer = { AcceptedJobsFooter() }
     )
 }

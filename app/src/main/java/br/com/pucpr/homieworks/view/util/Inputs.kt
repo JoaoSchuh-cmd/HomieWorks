@@ -1,4 +1,4 @@
-package br.com.pucpr.homieworks.templates.util
+package br.com.pucpr.homieworks.view.util
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,10 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,6 +26,8 @@ import java.util.Calendar
 @Composable
 fun InputText(
     modifier: Modifier = Modifier,
+    value: String,
+    onValueChange: (String) -> Unit,
     label: String,
     leadingIcon: (@Composable (() -> Unit))? = null,
     trailingIcon: (@Composable (() -> Unit))? = null,
@@ -37,7 +36,6 @@ fun InputText(
     backGroundColor: Color,
     fontColor: Color = Color.White
 ) {
-    var text by remember { mutableStateOf("") }
     val context = LocalContext.current
 
     Column(
@@ -55,7 +53,7 @@ fun InputText(
                 android.app.DatePickerDialog(
                     context,
                     { _, selectedYear, selectedMonth, selectedDay ->
-                        text = "%02d/%02d/%04d".format(selectedDay, selectedMonth + 1, selectedYear)
+                       onValueChange("%02d/%02d/%04d".format(selectedDay, selectedMonth + 1, selectedYear))
                     },
                     year,
                     month,
@@ -77,15 +75,15 @@ fun InputText(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = text.ifBlank { "Selecionar data" },
+                    text = value.ifBlank { "Selecionar data" },
                     color = fontColor,
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
         } else {
             TextField(
-                value = text,
-                onValueChange = {text = it},
+                value = value,
+                onValueChange = onValueChange,
                 label = { Text(
                     text = label,
                     color = fontColor.copy(alpha = 0.7f),

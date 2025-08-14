@@ -1,4 +1,4 @@
-package br.com.pucpr.homieworks.data
+package br.com.pucpr.homieworks.model
 
 data class Job(
     val title: String,

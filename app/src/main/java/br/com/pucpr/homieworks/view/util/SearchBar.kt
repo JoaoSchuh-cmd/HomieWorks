@@ -1,4 +1,4 @@
-package br.com.pucpr.homieworks.templates.util
+package br.com.pucpr.homieworks.view.util
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size

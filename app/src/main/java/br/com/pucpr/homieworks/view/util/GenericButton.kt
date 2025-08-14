@@ -1,4 +1,4 @@
-package br.com.pucpr.homieworks.templates.util
+package br.com.pucpr.homieworks.view.util
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height

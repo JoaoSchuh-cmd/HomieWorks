@@ -1,4 +1,4 @@
-package br.com.pucpr.homieworks.templates
+package br.com.pucpr.homieworks.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -25,24 +25,36 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import br.com.pucpr.homieworks.data.Job
-import br.com.pucpr.homieworks.templates.util.CardHeader
-import br.com.pucpr.homieworks.templates.util.GenericButton
-import br.com.pucpr.homieworks.templates.util.GenericPage
+import androidx.navigation.NavController
+import br.com.pucpr.homieworks.Screen
+import br.com.pucpr.homieworks.model.Job
+import br.com.pucpr.homieworks.view.util.CardHeader
+import br.com.pucpr.homieworks.view.util.GenericButton
+import br.com.pucpr.homieworks.view.util.GenericPage
 import br.com.pucpr.homieworks.ui.theme.darkCean
 import br.com.pucpr.homieworks.ui.theme.lightRed
 import br.com.pucpr.homieworks.ui.theme.mediumCean
 import br.com.pucpr.homieworks.ui.theme.superLightCean
+import br.com.pucpr.homieworks.viewmodel.AcceptedJobsDetailsViewModel
 
 @Composable
 fun AcceptedJobsDetailsPage(
     job: Job,
-    onBackClick: () -> Unit
+    viewModel: AcceptedJobsDetailsViewModel,
+    navController: NavController
 ) {
     GenericPage(
-        { AcceptedJobsDetailsHeader(onBackClick) },
+        { AcceptedJobsDetailsHeader {
+            navController.navigate(Screen.Accepted.route) {
+                popUpTo(Screen.AcceptedDetails.route) { inclusive = true }
+            }
+        } },
         { AcceptedJobsDetailsContent(job) },
-        { AcceptedJobsDetailsFooter(onBackClick) }
+        { AcceptedJobsDetailsFooter{
+            navController.navigate(Screen.Accepted.route) {
+                popUpTo(Screen.AcceptedDetails.route) { inclusive = true }
+            }
+        } }
     )
 }
 

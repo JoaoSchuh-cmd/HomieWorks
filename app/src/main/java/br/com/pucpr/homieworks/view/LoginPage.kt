@@ -1,4 +1,4 @@
-package br.com.pucpr.homieworks.templates
+package br.com.pucpr.homieworks.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,29 +15,44 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import br.com.pucpr.homieworks.R
-import br.com.pucpr.homieworks.templates.util.GenericButton
-import br.com.pucpr.homieworks.templates.util.InputText
+import br.com.pucpr.homieworks.Screen
+import br.com.pucpr.homieworks.view.util.GenericButton
+import br.com.pucpr.homieworks.view.util.InputText
 import br.com.pucpr.homieworks.ui.theme.mediumCean
 import br.com.pucpr.homieworks.ui.theme.darkCean
+import br.com.pucpr.homieworks.ui.theme.lightRed
 import br.com.pucpr.homieworks.ui.theme.superLightCean
+import br.com.pucpr.homieworks.viewmodel.LoginViewModel
 
 @Composable
 fun LoginPage(
-    onLoginSuccess: () -> Unit,
-    onSignUp: () -> Unit,
-    onForgotPassword: () -> Unit
+    viewModel: LoginViewModel = viewModel(),
+    navController: NavController
 ) {
+    val loading = viewModel.loading
+    val loginError = viewModel.loginError
+    val loginSuccess = viewModel.loginSuccess
+
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -66,6 +81,8 @@ fun LoginPage(
 
                 InputText(
                     label = "E-mail",
+                    value = email,
+                    onValueChange = { email = it },
                     leadingIcon  = {
                         Icon(
                             imageVector = Icons.Filled.Mail,
@@ -82,6 +99,8 @@ fun LoginPage(
 
                 InputText(
                     label = "Senha",
+                    value = password,
+                    onValueChange = { password = it },
                     leadingIcon  = {
                         Icon(
                             imageVector = Icons.Filled.Lock,
@@ -108,34 +127,63 @@ fun LoginPage(
             ) {
                 Column {
                     GenericButton(
-                        text = "Entrar",
+                        text = if (loading) "Entrando..." else "Entrar",
                         textColor = darkCean,
                         containerColor = superLightCean,
                         modifier = Modifier.fillMaxWidth(),
-                        onClick = { onLoginSuccess() }
+                        onClick = {
+                            if (email.isBlank() || password.isBlank()) {
+                                viewModel.updateLoginError("E-mail e senha não podem estar vazios")
+                            } else {
+                                viewModel.fazerLogin(email, password)
+                            }
+                        },
                     )
-                    TextButton(
-                        onClick = { onForgotPassword() },
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .fillMaxWidth()
-                    ) {
+
+                    if (loginError != null) {
                         Text(
-                            text = "Clique aqui se esqueceu sua senha",
-                            color = superLightCean,
-                            style = MaterialTheme.typography.bodyLarge,
+                            text = loginError,
+                            color = lightRed,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
                         )
                     }
+
+                    if (loginSuccess) {
+                        LaunchedEffect(Unit) {
+                            navController.navigate(Screen.Feed.route) {
+                                popUpTo(Screen.Login.route) { inclusive = true }
+                            }
+                        }
+                    }
+
+//                    TextButton(
+//                        onClick = { navController.navigate(Screen.Recovery.route) {
+//                            popUpTo(Screen.Login.route) { inclusive = true }
+//                        } },
+//                        modifier = Modifier
+//                            .align(Alignment.CenterHorizontally)
+//                            .fillMaxWidth()
+//                    ) {
+//                        Text(
+//                            text = "Clique aqui se esqueceu sua senha",
+//                            color = superLightCean,
+//                            style = MaterialTheme.typography.bodyLarge,
+//                        )
+//                    }
                 }
                 GenericButton(
                     text = "Cadastrar",
                     containerColor = Color.Black,
                     textColor = superLightCean,
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = { onSignUp() }
+                    onClick = { navController.navigate(Screen.SignUp.route) {
+                        popUpTo(Screen.Login.route) { inclusive = true }
+                    } }
                 )
             }
         }
     }
 }
+
 

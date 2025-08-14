@@ -1,4 +1,4 @@
-package br.com.pucpr.homieworks.templates
+package br.com.pucpr.homieworks.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -37,19 +37,21 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.com.pucpr.homieworks.templates.util.GenericButton
-import br.com.pucpr.homieworks.templates.util.InputText
+import androidx.navigation.NavController
+import br.com.pucpr.homieworks.Screen
+import br.com.pucpr.homieworks.view.util.GenericButton
+import br.com.pucpr.homieworks.view.util.InputText
 import br.com.pucpr.homieworks.ui.theme.darkCean
 import br.com.pucpr.homieworks.ui.theme.lightCean
 import br.com.pucpr.homieworks.ui.theme.lightGreen
 import br.com.pucpr.homieworks.ui.theme.lightRed
 import br.com.pucpr.homieworks.ui.theme.superLightCean
+import br.com.pucpr.homieworks.viewmodel.SignUpViewModel
 
 @Composable
 fun SignUpPage(
-    onAlreadyHaveAccount : () -> Unit,
-    onCancel: () -> Unit,
-    onSignUpSuccess: () -> Unit
+    viewModel: SignUpViewModel,
+    navController: NavController
 ) {
     var session by remember { mutableIntStateOf(1) }
 
@@ -65,13 +67,22 @@ fun SignUpPage(
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             SignUpHeader(session)
-            SignUpContainer(
+            SignUpContent(
                 session = session,
                 onSessionChange = { session = it },
-                onCancel = onCancel,
-                onSignUpSuccess = onSignUpSuccess
+                onCancel = { navController.navigate(Screen.Login.route){
+                    popUpTo(Screen.SignUp.route) { inclusive = true }
+                } },
+                viewModel = viewModel,
             )
-            SignUpFooter(onAlreadyHaveAccount = onAlreadyHaveAccount)
+            SignUpFooter(
+                onAlreadyHaveAccount = {
+                    navController.navigate(Screen.Login.route){
+                        popUpTo(Screen.SignUp.route) { inclusive = true }
+                    }
+                },
+
+            )
         }
     }
 }
@@ -118,29 +129,31 @@ fun SignUpInfo(label: String, session: Int) {
 }
 
 @Composable
-fun SignUpContainer(
+fun SignUpContent(
     session: Int,
     onSessionChange: (Int) -> Unit,
     onCancel: () -> Unit,
-    onSignUpSuccess: () -> Unit
+    viewModel: SignUpViewModel,
 ) {
     Column(
         modifier = Modifier.wrapContentHeight(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        if (session == 1) PersonalInfoForm() else AddressInfoForm()
+        if (session == 1) PersonalInfoForm(viewModel) else AddressInfoForm(viewModel)
 
-        if (session == 1) PersonalInfoFooter(onSessionChange = onSessionChange, onCancel = onCancel) else AddressInfoFooter(onSessionChange, onSignUpSuccess)
+        if (session == 1) PersonalInfoFooter(onSessionChange = onSessionChange, onCancel = onCancel) else AddressInfoFooter(onSessionChange, viewModel)
     }
 }
 
 @Composable
-fun PersonalInfoForm() {
+fun PersonalInfoForm(viewModel: SignUpViewModel) {
     val backGroundColor = darkCean
     val fontColor = superLightCean
 
     InputText(
         label = "Nome",
+        value = viewModel.user.name,
+        onValueChange = { viewModel.updateName(it) },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Rounded.Face,
@@ -154,6 +167,8 @@ fun PersonalInfoForm() {
     )
     InputText(
         label = "Celular",
+        value = viewModel.user.phoneNumber,
+        onValueChange = { viewModel.updatePhone(it) },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Phone,
@@ -167,6 +182,8 @@ fun PersonalInfoForm() {
     )
     InputText(
         label = "E-mail",
+        value = viewModel.user.email,
+        onValueChange = { viewModel.updateEmail(it) },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Email,
@@ -180,6 +197,8 @@ fun PersonalInfoForm() {
     )
     InputText(
         label = "Senha",
+        value = viewModel.user.userPassword,
+        onValueChange = { viewModel.updatePassword(it) },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Lock,
@@ -194,12 +213,14 @@ fun PersonalInfoForm() {
 }
 
 @Composable
-fun AddressInfoForm() {
+fun AddressInfoForm(viewModel: SignUpViewModel) {
     val backgroundColor = darkCean
     val fontColor = superLightCean
 
     InputText(
         label = "Rua",
+        value = viewModel.user.addressStreet,
+        onValueChange = { viewModel.updateAddressStreet(it) },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Map,
@@ -213,6 +234,8 @@ fun AddressInfoForm() {
     )
     InputText(
         label = "Número",
+        value = viewModel.user.addressNum,
+        onValueChange = { viewModel.updateAddressNumber(it) } ,
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Numbers,
@@ -226,6 +249,8 @@ fun AddressInfoForm() {
     )
     InputText(
         label = "Cidade",
+        value = viewModel.user.addressCity,
+        onValueChange = { viewModel.updateAddressCity(it) },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.LocationCity,
@@ -239,6 +264,8 @@ fun AddressInfoForm() {
     )
     InputText(
         label = "Estado",
+        value = viewModel.user.addressState,
+        onValueChange = { viewModel.updateAddressState(it) },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Flag,
@@ -252,6 +279,8 @@ fun AddressInfoForm() {
     )
     InputText(
         label = "CEP",
+        value = viewModel.user.addressPostalCode,
+        onValueChange = { viewModel.updateAddressPostalCode(it) },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.LocalPostOffice,
@@ -306,7 +335,10 @@ fun PersonalInfoFooter(onSessionChange: (Int) -> Unit, onCancel: () -> Unit) {
 }
 
 @Composable
-fun AddressInfoFooter(onSessionChange: (Int) -> Unit, onSignUpSuccess: () -> Unit) {
+fun AddressInfoFooter(
+    onSessionChange: (Int) -> Unit,
+    viewModel: SignUpViewModel,
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -325,11 +357,12 @@ fun AddressInfoFooter(onSessionChange: (Int) -> Unit, onSignUpSuccess: () -> Uni
             containerColor = lightRed,
             onClick = { onSessionChange(1) }
         )
+
         GenericButton(
             modifier = Modifier.weight(1f),
             containerColor = lightGreen,
             text = "Finalizado",
-            onClick = { onSignUpSuccess() }
+            onClick = { viewModel.fazerCadastro(viewModel.user) }
         )
     }
 }
