@@ -53,7 +53,6 @@ fun FeedPage(
             FeedContent(
                 viewModel = viewModel,
                 onCardClick = { selectedJob ->
-                    Log.e("TESTEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE333333333", "FeedContent selectedJob ->: $selectedJob")
                     viewModel.selectJob(selectedJob)
                     selectedJob.id?.let { id ->
                         navController.navigate(Screen.JobDetails.createRoute(id))

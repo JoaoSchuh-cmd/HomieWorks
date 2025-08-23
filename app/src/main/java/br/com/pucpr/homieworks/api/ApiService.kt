@@ -19,6 +19,9 @@ interface ApiService {
     @POST("/api/users")
     suspend fun insertUser(@Body user: User): User
 
+    @GET("/api/users/{id}")
+    suspend fun getUserById(@Path("id") id: Long): Response<User>
+
     @GET("/api/users/phone/{phoneNumber}")
     suspend fun getUserByPhoneNum(@Path("phoneNumber") phoneNumber: String) : Response<User>
 
@@ -51,4 +54,7 @@ interface ApiService {
 
     @POST("/api/recovery/update-user-password/{firebaseUID}")
     suspend fun updateFirebaseUserPassword(@Path("firebaseUID") firebaseUid: String, @Body newPassword: String): Response<ResponseBody>
+
+    @GET("/api/whatsapp/send-message/{phoneNumber}")
+    suspend fun sendWppMessageToPhoneNumber(@Path("phoneNumber") phoneNumber: String) : Response<ResponseBody>
 }

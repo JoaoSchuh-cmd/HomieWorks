@@ -33,7 +33,6 @@ class FeedViewModel @Inject constructor() : ViewModel() {
         private set
 
     fun selectJob(job: Job) {
-        Log.e("TESTEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE222222222", "selectJob(): $job")
         selectedJob = job
     }
 
@@ -57,7 +56,6 @@ class FeedViewModel @Inject constructor() : ViewModel() {
                 if (response.isSuccessful) {
                     val jobDtos = response.body() ?: emptyList()
                     jobsList = jobDtos.map { it.toJob() }
-                    Log.e("TESTEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE11111111", "Lista de Jobs: ${jobsList!!.size}")
                     feedSuccess = true
                 }
             } catch (e: Exception) {

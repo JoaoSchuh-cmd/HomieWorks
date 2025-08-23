@@ -1,5 +1,7 @@
 package br.com.pucpr.homieworks.viewmodel
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -49,4 +51,32 @@ class JobDetailViewModel : ViewModel() {
             }
         }
     }
+
+    var whatsappUrl by mutableStateOf<String?>(null)
+        private set
+
+    fun sendMessage() {
+        viewModelScope.launch {
+            loading = true
+            jobDetailError = null
+            jobDetailSuccess = false
+            whatsappUrl = null
+
+            try {
+                val getOwnerResponse = Retrofit.api.getUserById(job.owner!!.id!!)
+                if (getOwnerResponse.isSuccessful) {
+                    job = job.copy(owner = getOwnerResponse.body()!!)
+                } else throw Exception("Proprietário não encontrado: ${getOwnerResponse.code()}")
+
+                val phoneNumber = "55${job.owner!!.phoneNumber}"
+                whatsappUrl = "https://wa.me/$phoneNumber"
+
+            } catch (e: Exception) {
+                jobDetailError = e.message ?: "Erro desconhecido ao enviar mensagem"
+            } finally {
+                loading = false
+            }
+        }
+    }
+
 }

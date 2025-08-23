@@ -1,5 +1,7 @@
 package br.com.pucpr.homieworks.view
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -28,9 +30,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import br.com.pucpr.homieworks.api.Retrofit
 import br.com.pucpr.homieworks.navigation.Screen
 import br.com.pucpr.homieworks.model.Job
 import br.com.pucpr.homieworks.view.util.CardHeader
@@ -53,7 +57,6 @@ fun JobDetailsPage(
 
     LaunchedEffect(job) {
         job?.let {
-            Log.e("TESTEE", it.toString())
             viewModel.inflateJob(it)
         }
     }
@@ -64,7 +67,9 @@ fun JobDetailsPage(
                 popUpTo(Screen.JobDetails.route) { inclusive = true }
             }
         }) },
-        { JobDetailsContent(viewModel) },
+        { JobDetailsContent(
+            viewModel = viewModel,
+        ) },
         { JobDetailsFooter(viewModel, onBackClick =  {
             navController.navigate(Screen.Feed.route) {
                 popUpTo(Screen.JobDetails.route) { inclusive = true }
@@ -105,6 +110,17 @@ fun JobDetailsHeader(onBackClick: () -> Unit) {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun JobDetailsContent(viewModel: JobDetailViewModel) {
+    val context = LocalContext.current
+
+    val whatsappUrl = viewModel.whatsappUrl
+
+    LaunchedEffect(whatsappUrl) {
+        whatsappUrl?.let {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(it))
+            context.startActivity(intent)
+        }
+    }
+
     val job = viewModel.job
 
     Column(
@@ -126,14 +142,14 @@ fun JobDetailsContent(viewModel: JobDetailViewModel) {
                 .weight(1f)
         ) {
             Text(
-                text = "Título do serviço",
+                text = viewModel.job.title,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
             )
             Spacer(Modifier.height(8.dp))
             Text(
-                text = "Descrição mais longa do serviço",
+                text = viewModel.job.description,
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.Black
             )
@@ -158,6 +174,7 @@ fun JobDetailsContent(viewModel: JobDetailViewModel) {
                         )
                     },
                     modifier = Modifier.fillMaxWidth(),
+                    onClick = { viewModel.sendMessage() }
                 )
             }
         }
