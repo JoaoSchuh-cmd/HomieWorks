@@ -145,7 +145,7 @@ fun NewJobForm(viewModel: NewJobViewModel) {
     InputText(
         label = "Valor(Helpedits)",
         value = viewModel.job.helpedits.toString(),
-        onValueChange = { viewModel.updateJobHelpedits(it.toInt()) },
+        onValueChange = { viewModel.updateJobHelpedits(it) },
         isSecret = false,
         backGroundColor = backgroundColor,
         fontColor = fontColor,
@@ -184,6 +184,7 @@ fun NewJobForm(viewModel: NewJobViewModel) {
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NewJobFooter(viewModel: NewJobViewModel, navController: NavController) {
     val loading = viewModel.loading

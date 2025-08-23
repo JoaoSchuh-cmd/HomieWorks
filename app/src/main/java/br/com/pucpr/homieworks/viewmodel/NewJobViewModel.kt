@@ -31,7 +31,7 @@ class NewJobViewModel: ViewModel() {
 
     fun updateJobTitle(title: String) { job = job.copy(title = title) }
     fun updateJobDescription(description: String) { job = job.copy(description = description) }
-    fun updateJobHelpedits(helpedits: Int) { job = job.copy(helpedits = helpedits) }
+    fun updateJobHelpedits(helpedits: String) { job = job.copy(helpedits = helpedits) }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun updateJobServiceData(data: String) {
@@ -66,19 +66,27 @@ class NewJobViewModel: ViewModel() {
                             ownerId = job.owner?.id,
                             workerId = job.worker?.id,
                             createDate = LocalDateTime.now().format(formatterOutput),
-                            helpedits = job.helpedits,
+                            helpedits = job.helpedits.toInt(),
                             serviceDatetime = job.serviceDatetime.format(formatterOutput),
                             finished = job.finished
                         )
 
-                        val response = Retrofit.api.insertJob(jobRequest)
+                        try {
+                            val response = Retrofit.api.insertJob(jobRequest)
 
-                        if (response.isSuccessful) {
-                            job = response.body() ?: throw Exception(response.message())
-                            newJobSuccess = true
-                        } else {
-                            throw Exception(response.message())
+                            if (response.isSuccessful) {
+                                job = response.body() ?: throw Exception(response.message())
+                                newJobSuccess = true
+                            } else {
+                                throw Exception(response.message())
+                            }
+                        } catch (e: Exception) {
+                            Log.e("TESTE", e.message ?: "Chegou aqui asdadasda")
+                            throw Exception(e.message)
                         }
+
+
+
 
                     } catch (apiException: Exception) {
                         throw Exception(apiException.message)

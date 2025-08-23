@@ -12,7 +12,7 @@ data class Job @RequiresApi(Build.VERSION_CODES.O) constructor(
     val owner: User? = SessionManager.sessionUser!!,
     val worker: User? = null,
     val createDate: LocalDateTime = LocalDateTime.now(),
-    val helpedits: Int = 10,
+    val helpedits: String = "10",
     val serviceDatetime: LocalDateTime = LocalDateTime.now().plusDays(30),
     val finished: Boolean? = false,
 )

@@ -17,7 +17,7 @@ fun JobDTO.toJob(): Job {
         description = this.description,
         serviceDatetime = LocalDateTime.parse(this.serviceDatetime, formatter),
         createDate = this.createDate.let { LocalDateTime.parse(it, formatter) },
-        helpedits = this.helpedits ?: 0,
+        helpedits = this.helpedits.toString(),
         finished = this.finished ?: false,
         owner = this.owner?.toUser(),
         worker = this.worker?.toUser()
