@@ -21,29 +21,29 @@ import br.com.pucpr.homieworks.ui.theme.lightCean
 
 @Composable
 fun SearchBar() {
-    var text by remember { mutableStateOf("") }
-
-    TextField(
-        modifier = Modifier
-            .fillMaxWidth(),
-        value = text,
-        shape = RoundedCornerShape(16.dp),
-        colors = TextFieldDefaults.colors(
-          focusedContainerColor = lightCean,
-          unfocusedContainerColor = lightCean,
-          focusedTextColor = Color.White,
-          unfocusedTextColor = Color.White,
-          cursorColor = Color.White,
-          focusedIndicatorColor = Color.Transparent,
-          unfocusedIndicatorColor = Color.Transparent
-        ),
-        label = {Text("Pesquisar telefone, trabalho, nome...", color = Color.White)},
-        onValueChange = {text = it},
-        trailingIcon = { Icon(
-            imageVector = Icons.Rounded.Search,
-            contentDescription = "Ícone de pesquisa",
-            tint = Color.White,
-            modifier = Modifier.size(28.dp)
-        )}
-    )
+//    var text by remember { mutableStateOf("") }
+//
+//    TextField(
+//        modifier = Modifier
+//            .fillMaxWidth(),
+//        value = text,
+//        shape = RoundedCornerShape(16.dp),
+//        colors = TextFieldDefaults.colors(
+//          focusedContainerColor = lightCean,
+//          unfocusedContainerColor = lightCean,
+//          focusedTextColor = Color.White,
+//          unfocusedTextColor = Color.White,
+//          cursorColor = Color.White,
+//          focusedIndicatorColor = Color.Transparent,
+//          unfocusedIndicatorColor = Color.Transparent
+//        ),
+//        label = {Text("Pesquisar telefone, trabalho, nome...", color = Color.White)},
+//        onValueChange = {text = it},
+//        trailingIcon = { Icon(
+//            imageVector = Icons.Rounded.Search,
+//            contentDescription = "Ícone de pesquisa",
+//            tint = Color.White,
+//            modifier = Modifier.size(28.dp)
+//        )}
+//    )
 }

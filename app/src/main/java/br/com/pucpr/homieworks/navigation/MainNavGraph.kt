@@ -8,25 +8,21 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import br.com.pucpr.homieworks.view.AcceptedJobDetailsPage
 import br.com.pucpr.homieworks.view.AcceptedJobsPage
-import br.com.pucpr.homieworks.view.MyJobsPage
 import br.com.pucpr.homieworks.view.NewJobPage
 import br.com.pucpr.homieworks.view.ProfilePage
 import br.com.pucpr.homieworks.viewmodel.AcceptedJobDetailsViewModel
 import br.com.pucpr.homieworks.viewmodel.AcceptedJobsViewModel
-import br.com.pucpr.homieworks.viewmodel.MyJobsViewModel
 import br.com.pucpr.homieworks.viewmodel.NewJobViewModel
 import br.com.pucpr.homieworks.viewmodel.ProfileViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
-    composable(Screen.MyJobs.route) {
-        val viewModel: MyJobsViewModel = viewModel()
-        MyJobsPage(viewModel = viewModel, navController = navController)
-    }
-
     composable(Screen.NewJob.route) {
         val viewModel: NewJobViewModel = viewModel()
-        NewJobPage(viewModel = viewModel, navController = navController)
+        NewJobPage(
+            viewModel = viewModel,
+            navController = navController,
+        )
     }
 
     composable(Screen.Accepted.route) {

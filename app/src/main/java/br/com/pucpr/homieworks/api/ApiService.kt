@@ -37,6 +37,12 @@ interface ApiService {
     @POST("/api/jobs/create")
     suspend fun insertJob(@Body job: JobRequest): Response<Job>
 
+    @PUT("/api/jobs/update")
+    suspend fun updateJob(@Body job: JobRequest): Response<Job>
+
+    @GET("/api/jobs/myjobs/{id}")
+    suspend fun getMyJobs(@Path("id") id: Long): Response<MutableList<JobDTO>>
+
     @GET("/api/jobs/{id}")
     suspend fun getJobById(@Path("id") id: Long): Response<Job>
 

@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import br.com.pucpr.homieworks.api.Retrofit
 import br.com.pucpr.homieworks.model.Job
 import br.com.pucpr.homieworks.model.requests.JobRequest
+import br.com.pucpr.homieworks.navigation.Screen
 import br.com.pucpr.homieworks.util.SessionManager
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
@@ -28,10 +29,19 @@ class NewJobViewModel: ViewModel() {
         private set
     var job by mutableStateOf(Job())
         private set
+    var screen by mutableStateOf<String?>(null)
+        private set
+
+    fun inflateJob(chargedJob: Job) {
+        Log.e("TESTE", job.toString())
+        job = chargedJob
+    }
 
     fun updateJobTitle(title: String) { job = job.copy(title = title) }
     fun updateJobDescription(description: String) { job = job.copy(description = description) }
     fun updateJobHelpedits(helpedits: String) { job = job.copy(helpedits = helpedits) }
+    fun updateScreen(screen: String) { this.screen = screen }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun updateJobServiceData(data: String) {
@@ -43,8 +53,6 @@ class NewJobViewModel: ViewModel() {
             Log.e("DATE_PARSE_ERROR", "Formato inválido: $data", e)
         }
     }
-
-
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun register() {
@@ -73,6 +81,62 @@ class NewJobViewModel: ViewModel() {
 
                         try {
                             val response = Retrofit.api.insertJob(jobRequest)
+
+                            if (response.isSuccessful) {
+                                job = response.body() ?: throw Exception(response.message())
+                                newJobSuccess = true
+                            } else {
+                                throw Exception(response.message())
+                            }
+                        } catch (e: Exception) {
+                            Log.e("TESTE", e.message ?: "Chegou aqui asdadasda")
+                            throw Exception(e.message)
+                        }
+
+
+
+
+                    } catch (apiException: Exception) {
+                        throw Exception(apiException.message)
+                    }
+                } else {
+                    throw Exception("Necessário preencher todos os campos de usuário")
+                }
+            } catch (e: Exception) {
+                newJobError = e.message ?: "Erro desconhecido"
+            } finally {
+                loading = false
+            }
+        }
+    }
+
+    fun updateJob() {
+        viewModelScope.launch {
+            loading = true
+            newJobSuccess = false
+            newJobError = null
+
+            try {
+                if (validarCampos(job)) {
+                    try {
+                        val formatterOutput = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+
+                        job = job.copy(owner = SessionManager.sessionUser!!)
+
+                        val jobRequest = JobRequest(
+                            id = job.id,
+                            title = job.title,
+                            description = job.description,
+                            ownerId = job.owner?.id,
+                            workerId = job.worker?.id,
+                            createDate = LocalDateTime.now().format(formatterOutput),
+                            helpedits = job.helpedits.toInt(),
+                            serviceDatetime = job.serviceDatetime.format(formatterOutput),
+                            finished = job.finished
+                        )
+
+                        try {
+                            val response = Retrofit.api.updateJob(jobRequest)
 
                             if (response.isSuccessful) {
                                 job = response.body() ?: throw Exception(response.message())

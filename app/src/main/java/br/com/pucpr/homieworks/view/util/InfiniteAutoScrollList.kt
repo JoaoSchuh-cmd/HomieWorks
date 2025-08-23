@@ -60,7 +60,7 @@ fun <T> InfiniteAutoScrollList(
             LazyColumn(
                 state = listState,
                 modifier = Modifier
-                    .fillMaxHeight(0.9f)
+                    .fillMaxHeight(0.98f)
                     .fillMaxWidth()
                     .background(color = backgroundColor, shape = RoundedCornerShape(16.dp))
                     .padding(16.dp),

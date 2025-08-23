@@ -1,6 +1,7 @@
 package br.com.pucpr.homieworks.view
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
@@ -29,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import br.com.pucpr.homieworks.model.Job
 import br.com.pucpr.homieworks.navigation.Screen
 import br.com.pucpr.homieworks.view.util.CardHeader
 import br.com.pucpr.homieworks.view.util.GenericButton
@@ -49,9 +52,20 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun NewJobPage(
     viewModel: NewJobViewModel,
-    navController: NavController
+    job: Job? = null,
+    navController: NavController,
+    screen: String? = Screen.Feed.route
 ) {
     var option by remember { mutableStateOf("newjob") }
+
+    LaunchedEffect(job) {
+        screen?.let {
+            viewModel.updateScreen(screen)
+        }
+        job?.let {
+            viewModel.inflateJob(it)
+        }
+    }
 
     GenericPage(
         { NewJobHeader(
@@ -70,7 +84,11 @@ fun NewJobPage(
             }
         ) },
         { NewJobContent(viewModel) },
-        { NewJobFooter(viewModel, navController) }
+        { NewJobFooter(viewModel, backPage = {
+            navController.navigate(screen!!){
+                popUpTo(Screen.NewJob.route) { inclusive = true }
+            }
+        }) }
     )
 }
 
@@ -144,7 +162,7 @@ fun NewJobForm(viewModel: NewJobViewModel) {
     )
     InputText(
         label = "Valor(Helpedits)",
-        value = viewModel.job.helpedits.toString(),
+        value = viewModel.job.helpedits,
         onValueChange = { viewModel.updateJobHelpedits(it) },
         isSecret = false,
         backGroundColor = backgroundColor,
@@ -186,7 +204,7 @@ fun NewJobForm(viewModel: NewJobViewModel) {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun NewJobFooter(viewModel: NewJobViewModel, navController: NavController) {
+fun NewJobFooter(viewModel: NewJobViewModel, backPage: () -> Unit) {
     val loading = viewModel.loading
     val newJobSuccess = viewModel.newJobSuccess
     val newJobError = viewModel.newJobError
@@ -207,9 +225,7 @@ fun NewJobFooter(viewModel: NewJobViewModel, navController: NavController) {
                     contentDescription = "Ícone de cancelamento"
                 )
             },
-            onClick = { navController.navigate(Screen.Feed.route){
-                popUpTo(Screen.NewJob.route) { inclusive = true }
-            } }
+            onClick = { backPage() }
         )
         GenericButton(
             text = if (loading) "Criando..." else "Criar",
@@ -224,15 +240,12 @@ fun NewJobFooter(viewModel: NewJobViewModel, navController: NavController) {
                 )
             },
             onClick = {
-                viewModel.register()
+                if (viewModel.screen == "myjobs") viewModel.updateJob()
+                else viewModel.register()
             }
         )
 
-        if (newJobSuccess) {
-            navController.navigate(Screen.Feed.route) {
-                popUpTo(Screen.NewJob.route) { inclusive = true }
-            }
-        }
+        if (newJobSuccess) { backPage() }
     }
 
     if (newJobError != null) {

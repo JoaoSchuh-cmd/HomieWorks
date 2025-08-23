@@ -16,6 +16,7 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
         startDestination = Screen.Login.route,
         modifier = Modifier
     ) {
+        myjobsNavGraph(navController)
         authNavGraph(navController)
         feedNavGraph(navController)
         mainNavGraph(navController)
