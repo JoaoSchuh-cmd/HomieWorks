@@ -1,5 +1,7 @@
 package br.com.pucpr.homieworks.view
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,23 +12,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Handshake
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Whatsapp
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import br.com.pucpr.homieworks.Screen
-import br.com.pucpr.homieworks.model.Job
+import br.com.pucpr.homieworks.navigation.Screen
 import br.com.pucpr.homieworks.view.util.CardHeader
 import br.com.pucpr.homieworks.view.util.GenericButton
 import br.com.pucpr.homieworks.view.util.GenericPage
@@ -38,8 +41,11 @@ import br.com.pucpr.homieworks.ui.theme.lightRed
 import br.com.pucpr.homieworks.ui.theme.mediumCean
 import br.com.pucpr.homieworks.ui.theme.superLightCean
 import br.com.pucpr.homieworks.ui.theme.yellow
+import br.com.pucpr.homieworks.util.SessionManager
 import br.com.pucpr.homieworks.viewmodel.NewJobViewModel
+import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NewJobPage(
     viewModel: NewJobViewModel,
@@ -47,15 +53,10 @@ fun NewJobPage(
 ) {
     var option by remember { mutableStateOf("newjob") }
 
-    var jobTitle by remember { mutableStateOf("") }
-    var jobHelpedits by remember { mutableIntStateOf(0) }
-    var jobDate by remember { mutableStateOf("") }
-    var jobDescription by remember { mutableStateOf("") }
-
     GenericPage(
         { NewJobHeader(
             onProfileIconClick = {
-                navController.navigate(Screen.NewJob.route) {
+                navController.navigate(Screen.Profile.route) {
                     popUpTo(Screen.NewJob.route) { inclusive = true }
                 }
             },
@@ -68,19 +69,8 @@ fun NewJobPage(
                 }
             }
         ) },
-        {
-            NewJobContent(
-                jobTitle = jobTitle,
-                onJobTitleChange = { jobTitle = it },
-                jobHelpedits = jobHelpedits.toString(),
-                onJobHelpedits = { jobHelpedits = it.toInt() },
-                jobDate = jobDate,
-                onJobDateChange = { jobDate = it },
-                jobDescription = jobDescription,
-                onJobDescription = { jobDescription = it }
-            )
-        },
-        { NewJobFooter() }
+        { NewJobContent(viewModel) },
+        { NewJobFooter(viewModel, navController) }
     )
 }
 
@@ -96,24 +86,9 @@ fun NewJobHeader(
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun NewJobContent(
-    jobTitle: String,
-    onJobTitleChange: (String) -> Unit,
-    jobHelpedits: String,
-    onJobHelpedits: (String) -> Unit,
-    jobDate: String,
-    onJobDateChange: (String) -> Unit,
-    jobDescription: String,
-    onJobDescription: (String) -> Unit
-) {
-    val job = Job(
-        title = "Título do trabalho",
-        userName= "João Schuh",
-        userAddress = "Rua fictícia, 295, M.C.R - PR",
-        data = "",
-        description = ""
-    )
+fun NewJobContent( viewModel: NewJobViewModel ) {
 
     Column(
         modifier = Modifier
@@ -123,7 +98,7 @@ fun NewJobContent(
             .padding(16.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        CardHeader(job = job, withHelpeditsAndData = false)
+        CardHeader(user = SessionManager.sessionUser!!, withHelpeditsAndData = false)
 
         Column(
             modifier = Modifier
@@ -133,16 +108,7 @@ fun NewJobContent(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            NewJobForm(
-                jobTitle,
-                onJobTitleChange,
-                jobHelpedits,
-                onJobHelpedits,
-                jobDate,
-                onJobDateChange,
-                jobDescription,
-                onJobDescription
-            )
+            NewJobForm(viewModel = viewModel)
         }
 
         GenericButton(
@@ -161,32 +127,25 @@ fun NewJobContent(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun NewJobForm(
-    jobTitle: String,
-    onJobTitleChange: (String) -> Unit,
-    jobHelpedits: String,
-    onJobHelpedits: (String) -> Unit,
-    jobDate: String,
-    onJobDateChange: (String) -> Unit,
-    jobDescription: String,
-    onJobDescription: (String) -> Unit
-) {
+fun NewJobForm(viewModel: NewJobViewModel) {
+    val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
     val backgroundColor = darkCean
     val fontColor = Color.White
 
     InputText(
         label = "Título do trabalho",
-        value = jobTitle,
-        onValueChange = onJobTitleChange,
+        value = viewModel.job.title,
+        onValueChange = { viewModel.updateJobTitle(it) },
         isSecret = false,
         backGroundColor = backgroundColor,
         fontColor = fontColor
     )
     InputText(
         label = "Valor(Helpedits)",
-        value = jobHelpedits,
-        onValueChange = onJobTitleChange,
+        value = viewModel.job.helpedits.toString(),
+        onValueChange = { viewModel.updateJobHelpedits(it.toInt()) },
         isSecret = false,
         backGroundColor = backgroundColor,
         fontColor = fontColor,
@@ -200,8 +159,10 @@ fun NewJobForm(
     )
     InputText(
         label = "Data",
-        value = jobDate,
-        onValueChange = onJobDateChange,
+        value =  viewModel.job.serviceDatetime.format(dateFormatter),
+        onValueChange = {
+            viewModel.updateJobServiceData(it)
+        },
         isDate = true,
         backGroundColor = backgroundColor,
         fontColor = fontColor,
@@ -215,8 +176,8 @@ fun NewJobForm(
     )
     InputText(
         label = "Descrição do trabalho",
-        value = jobDescription,
-        onValueChange = onJobDescription,
+        value = viewModel.job.description,
+        onValueChange = { viewModel.updateJobDescription(it) },
         modifier = Modifier.fillMaxHeight(),
         backGroundColor = backgroundColor,
         fontColor = fontColor
@@ -224,26 +185,33 @@ fun NewJobForm(
 }
 
 @Composable
-fun NewJobFooter() {
+fun NewJobFooter(viewModel: NewJobViewModel, navController: NavController) {
+    val loading = viewModel.loading
+    val newJobSuccess = viewModel.newJobSuccess
+    val newJobError = viewModel.newJobError
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         GenericButton(
-            text = "Descartar",
+            text = "Cancelar",
             textColor = Color.White,
             containerColor = lightRed,
             modifier = Modifier.weight(1f),
             icon = {
                 Icon(
-                    imageVector = Icons.Default.Delete,
+                    imageVector = Icons.Default.Cancel,
                     tint = Color.White,
-                    contentDescription = "Ícone de lixeira"
+                    contentDescription = "Ícone de cancelamento"
                 )
-            }
+            },
+            onClick = { navController.navigate(Screen.Feed.route){
+                popUpTo(Screen.NewJob.route) { inclusive = true }
+            } }
         )
         GenericButton(
-            text = "Criar",
+            text = if (loading) "Criando..." else "Criar",
             textColor = Color.White,
             containerColor = lightGreen,
             modifier = Modifier.weight(1f),
@@ -253,7 +221,25 @@ fun NewJobFooter() {
                     tint = Color.White,
                     contentDescription = "Ícone de disquete"
                 )
+            },
+            onClick = {
+                viewModel.register()
             }
+        )
+
+        if (newJobSuccess) {
+            navController.navigate(Screen.Feed.route) {
+                popUpTo(Screen.NewJob.route) { inclusive = true }
+            }
+        }
+    }
+
+    if (newJobError != null) {
+        Text(
+            text = "Erro ao cadastrar trabalho: $newJobError",
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Bold,
+            color = lightRed
         )
     }
 }

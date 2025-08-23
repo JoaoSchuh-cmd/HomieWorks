@@ -1,11 +1,13 @@
-package br.com.pucpr.homieworks.functions
+package br.com.pucpr.homieworks.util
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import io.jsonwebtoken.security.Password
 import kotlinx.coroutines.tasks.await
 
 object FirebaseAuthService {
     private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
 
-    suspend fun cadastro(
+    suspend fun register(
         email: String,
         password: String
     ): String {
@@ -35,6 +37,20 @@ object FirebaseAuthService {
         } catch (e: Exception) {
             throw Exception(tratarErroFirebase(e))
         }
+    }
+
+    fun logout() { FirebaseAuth.getInstance().signOut() }
+
+    fun remove(onComplete: (Boolean, String?) -> Unit) {
+        val user = FirebaseAuth.getInstance().currentUser
+        user?.delete()
+            ?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    onComplete(true, null)
+                } else {
+                    onComplete(false, task.exception?.message)
+                }
+            }
     }
 
     private fun tratarErroFirebase(e: Exception): String {

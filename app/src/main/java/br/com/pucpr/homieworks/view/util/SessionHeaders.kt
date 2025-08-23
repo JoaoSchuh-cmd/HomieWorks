@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.pucpr.homieworks.ui.theme.darkCean
 import br.com.pucpr.homieworks.ui.theme.yellow
+import br.com.pucpr.homieworks.util.SessionManager
 
 @Composable
 fun SessionHeader(
@@ -116,7 +117,7 @@ fun SessionHeader(
                         fontWeight = FontWeight.Bold
                     )
                     Row {
-                        Text("200", fontSize = 20.sp, color = yellow, fontWeight = FontWeight.Bold)
+                        Text(SessionManager.sessionUser!!.helpedits.toString(), fontSize = 20.sp, color = yellow, fontWeight = FontWeight.Bold)
                         Icon(
                             imageVector = Icons.Default.Handshake,
                             tint = yellow,

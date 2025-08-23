@@ -1,5 +1,7 @@
 package br.com.pucpr.homieworks.view.util
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,13 +31,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import br.com.pucpr.homieworks.model.Job
+import br.com.pucpr.homieworks.model.User
 import br.com.pucpr.homieworks.ui.theme.darkCean
 import br.com.pucpr.homieworks.ui.theme.superLightCean
 import br.com.pucpr.homieworks.ui.theme.yellow
+import br.com.pucpr.homieworks.util.SessionManager
+import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Card(
-    job: Job,
+    user: User? = SessionManager.sessionUser!!,
+    job: Job? = null,
     backgroundColor: Color = darkCean,
     withHelpeditsAndData: Boolean = true,
     onCardClik: () -> Unit,
@@ -65,15 +72,17 @@ fun Card(
                 .align(Alignment.CenterHorizontally),
             verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
-            CardHeader(withHelpeditsAndData, job)
-            CardJobTitle(job)
+            CardHeader(withHelpeditsAndData, user!!, job)
+            CardJobTitle(job!!)
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun CardHeader(withHelpeditsAndData: Boolean = true, job: Job) {
+fun CardHeader(withHelpeditsAndData: Boolean = true, user: User? = SessionManager.sessionUser!!, job: Job? = null) {
     val fontColor = superLightCean
+    val dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
 
     Row(
         modifier = Modifier
@@ -92,12 +101,12 @@ fun CardHeader(withHelpeditsAndData: Boolean = true, job: Job) {
                 )
                 Column {
                     Text(
-                        text = job.userName,
+                        text = user!!.name,
                         style = MaterialTheme.typography.titleMedium,
                         color = fontColor
                     )
                     Text(
-                        text = job.userAddress,
+                        text = "Rua ${user.addressStreet}, ${user.addressNum}, ${user.addressCity} - ${user.addressState}",
                         style = MaterialTheme.typography.labelSmall,
                         color = Color.White
                     )
@@ -114,7 +123,7 @@ fun CardHeader(withHelpeditsAndData: Boolean = true, job: Job) {
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
                     Text(
-                        text = "10",
+                        text = job?.helpedits.toString(),
                         style = MaterialTheme.typography.titleLarge,
                         color = yellow,
                         fontWeight = FontWeight.Bold,
@@ -128,7 +137,7 @@ fun CardHeader(withHelpeditsAndData: Boolean = true, job: Job) {
                 Text(
                     modifier = Modifier
                         .align(Alignment.End),
-                    text = "Data: ${job.data}",
+                    text = if (job != null) "Data: ${job.serviceDatetime.format(dateTimeFormatter)}" else "Data: __/__/____",
                     style = MaterialTheme.typography.labelSmall,
                     color = Color.White
                 )

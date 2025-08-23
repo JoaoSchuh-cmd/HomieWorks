@@ -1,5 +1,9 @@
 package br.com.pucpr.homieworks.view.util
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -21,8 +25,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun InputText(
     modifier: Modifier = Modifier,
@@ -34,7 +42,7 @@ fun InputText(
     isSecret: Boolean = false,
     isDate: Boolean = false,
     backGroundColor: Color,
-    fontColor: Color = Color.White
+    fontColor: Color = Color.White,
 ) {
     val context = LocalContext.current
 
@@ -49,17 +57,41 @@ fun InputText(
             val month = calendar.get(Calendar.MONTH)
             val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-            val datePickerDialog = remember {
-                android.app.DatePickerDialog(
-                    context,
-                    { _, selectedYear, selectedMonth, selectedDay ->
-                       onValueChange("%02d/%02d/%04d".format(selectedDay, selectedMonth + 1, selectedYear))
-                    },
-                    year,
-                    month,
-                    day
-                )
-            }
+            val hour = calendar.get(Calendar.HOUR_OF_DAY)
+            val minute = calendar.get(Calendar.MINUTE)
+
+            val datePickerDialog = DatePickerDialog(
+                context,
+                { _, y, m, d ->
+                    val timePickerDialog = TimePickerDialog(
+                        context,
+                        { _, h, min ->
+                            val selectedDateTime = LocalDateTime.of(y, m + 1, d, h, min)
+                            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
+                            onValueChange(selectedDateTime.format(formatter))
+                        },
+                        hour,
+                        minute,
+                        true
+                    )
+                    timePickerDialog.show()
+                },
+                year,
+                month,
+                day
+            )
+
+//            val datePickerDialog = remember {
+//                android.app.DatePickerDialog(
+//                    context,
+//                    { _, selectedYear, selectedMonth, selectedDay ->
+//                       onValueChange("%02d/%02d/%04d".format(selectedDay, selectedMonth + 1, selectedYear))
+//                    },
+//                    year,
+//                    month,
+//                    day
+//                )
+//            }
 
             Column(
                 modifier = modifier

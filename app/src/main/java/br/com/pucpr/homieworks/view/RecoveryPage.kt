@@ -1,5 +1,7 @@
 //package br.com.pucpr.homieworks.view
 //
+//import android.os.Build
+//import androidx.annotation.RequiresApi
 //import androidx.compose.foundation.background
 //import androidx.compose.foundation.layout.Arrangement
 //import androidx.compose.foundation.layout.Box
@@ -12,10 +14,10 @@
 //import androidx.compose.material.icons.Icons
 //import androidx.compose.material.icons.automirrored.filled.Send
 //import androidx.compose.material.icons.filled.CheckCircle
-//import androidx.compose.material.icons.filled.Email
 //import androidx.compose.material.icons.filled.Lock
 //import androidx.compose.material.icons.filled.LockReset
 //import androidx.compose.material.icons.filled.Numbers
+//import androidx.compose.material.icons.filled.Phone
 //import androidx.compose.material.icons.filled.Save
 //import androidx.compose.material3.Icon
 //import androidx.compose.material3.MaterialTheme
@@ -24,6 +26,7 @@
 //import androidx.compose.runtime.Composable
 //import androidx.compose.runtime.getValue
 //import androidx.compose.runtime.mutableIntStateOf
+//import androidx.compose.runtime.mutableStateOf
 //import androidx.compose.runtime.remember
 //import androidx.compose.runtime.setValue
 //import androidx.compose.ui.Alignment
@@ -33,17 +36,22 @@
 //import androidx.compose.ui.text.font.FontWeight
 //import androidx.compose.ui.text.style.TextAlign
 //import androidx.compose.ui.unit.dp
+//import androidx.navigation.NavController
+//import br.com.pucpr.homieworks.navigation.Screen
 //import br.com.pucpr.homieworks.view.util.GenericButton
 //import br.com.pucpr.homieworks.view.util.InputText
 //import br.com.pucpr.homieworks.ui.theme.darkCean
 //import br.com.pucpr.homieworks.ui.theme.lightCean
 //import br.com.pucpr.homieworks.ui.theme.lightGreen
+//import br.com.pucpr.homieworks.ui.theme.lightRed
 //import br.com.pucpr.homieworks.ui.theme.superLightCean
+//import br.com.pucpr.homieworks.viewmodel.RecoveryViewModel
 //
+//@RequiresApi(Build.VERSION_CODES.O)
 //@Composable
 //fun RecoveryPage(
-//    onAlreadyHaveAccount : () -> Unit,
-//    onSuccssesRecovery : () -> Unit,
+//    viewModel: RecoveryViewModel,
+//    navController: NavController,
 //) {
 //    Box(
 //        modifier = Modifier
@@ -58,8 +66,16 @@
 //            verticalArrangement = Arrangement.spacedBy(16.dp)
 //        ) {
 //            RecoveryHeader()
-//            RecoveryContent(onSuccssesRecovery = onSuccssesRecovery)
-//            RecoveryFooter(onAlreadyHaveAccount)
+//            RecoveryContent(viewModel, {
+//                navController.navigate(Screen.Login.route) {
+//                    popUpTo(Screen.Recovery.route)
+//                }
+//            })
+//            RecoveryFooter({
+//                navController.navigate(Screen.Login.route) {
+//                    popUpTo(Screen.Recovery.route) { inclusive = true }
+//                }
+//            })
 //        }
 //    }
 //}
@@ -82,8 +98,9 @@
 //    }
 //}
 //
+//@RequiresApi(Build.VERSION_CODES.O)
 //@Composable
-//fun RecoveryContent(onSuccssesRecovery: () -> Unit) {
+//fun RecoveryContent(viewModel: RecoveryViewModel, onRecoverySuccess: () -> Unit) {
 //    var session by remember { mutableIntStateOf(1) }
 //
 //    Box(
@@ -97,48 +114,62 @@
 //            verticalArrangement = Arrangement.spacedBy(16.dp),
 //        ) {
 //            when (session) {
-//                1 -> RecoverySessionOne(onSessionChange = { session = it })
-//                2 -> RecoverySessionTwo(onSessionChange = { session = it })
-//                3 -> RecoverySessionThree(onSuccssesRecovery = onSuccssesRecovery)
+//                1 -> RecoverySessionOne(
+//                    onSessionChange = {
+//                        viewModel.sendRecoverySMS(viewModel.recoveryPhone)
+//                        session = it
+//                    },
+//                    viewModel = viewModel
+//                )
+//                2 -> RecoverySessionTwo(
+//                    onSessionChange = { session = it },
+//                    viewModel = viewModel
+//                )
+//                3 -> RecoverySessionThree(viewModel = viewModel, onRecoverySuccess = { onRecoverySuccess() })
 //            }
 //        }
 //    }
 //}
 //
+//@RequiresApi(Build.VERSION_CODES.O)
 //@Composable
-//fun RecoverySessionOne(onSessionChange: (Int) -> Unit) {
+//fun RecoverySessionOne(onSessionChange: (Int) -> Unit, viewModel: RecoveryViewModel) {
+//    val recoveryPhone = viewModel.recoveryPhone
+//
 //    Column(
 //        modifier = Modifier
 //            .fillMaxWidth(),
 //        verticalArrangement = Arrangement.spacedBy(30.dp)
 //    ) {
 //        Text(
-//            text = "Confirme o e-mail de recuperação para recebimento do código:",
+//            text = "Confirme o celular de recuperação para recebimento do código:",
 //            style = MaterialTheme.typography.bodyLarge,
 //            color = Color.Black
 //        )
-//        Text(
-//            text = "j***@gmail.com",
-//            style = MaterialTheme.typography.bodyLarge,
-//            fontStyle = FontStyle.Italic,
-//            fontWeight = FontWeight.Bold,
-//            color = Color.Black
-//        )
+////        Text(
+////            text = "j***@gmail.com",
+////            style = MaterialTheme.typography.bodyLarge,
+////            fontStyle = FontStyle.Italic,
+////            fontWeight = FontWeight.Bold,
+////            color = Color.Black
+////        )
 //    }
 //    InputText(
-//        label = "E-mail",
+//        label = "Celular",
+//        value = recoveryPhone,
+//        onValueChange = { viewModel.updateRecoveryPhoneNum(it) },
 //        fontColor = superLightCean,
 //        backGroundColor = darkCean,
 //        leadingIcon = {
 //            Icon(
-//                imageVector = Icons.Default.Email,
+//                imageVector = Icons.Default.Phone,
 //                tint = superLightCean,
-//                contentDescription = "Ícone de e-mail"
+//                contentDescription = "Ícone de telefone"
 //            )
 //        }
 //    )
 //    GenericButton(
-//        text = "Enviar e-mail de recuperação",
+//        text = "Enviar SMS de recuperação",
 //        textColor = Color.White,
 //        containerColor = lightGreen,
 //        icon = {
@@ -152,8 +183,11 @@
 //    )
 //}
 //
+//@RequiresApi(Build.VERSION_CODES.O)
 //@Composable
-//fun RecoverySessionTwo(onSessionChange: (Int) -> Unit) {
+//fun RecoverySessionTwo(onSessionChange: (Int) -> Unit, viewModel: RecoveryViewModel) {
+//    val confirmRecoveryCode = viewModel.confirmRecoveryCode
+//
 //    Column(
 //        modifier = Modifier
 //            .fillMaxWidth(),
@@ -167,6 +201,8 @@
 //        )
 //
 //        InputText(
+//            value = confirmRecoveryCode,
+//            onValueChange = { viewModel.updateConfirmeRecoveryCode(it) },
 //            label = "Código",
 //            leadingIcon = {
 //                Icon(
@@ -190,7 +226,10 @@
 //                    contentDescription = "Ícone de check"
 //                )
 //            },
-//            onClick = { onSessionChange(3) }
+//            onClick = {
+//                //TODO Fazer validação do código
+//                onSessionChange(3)
+//            }
 //        )
 //        TextButton(
 //            onClick = {  },
@@ -207,8 +246,16 @@
 //    }
 //}
 //
+//@RequiresApi(Build.VERSION_CODES.O)
 //@Composable
-//fun RecoverySessionThree(onSuccssesRecovery: () -> Unit) {
+//fun RecoverySessionThree(onRecoverySuccess: () -> Unit, viewModel: RecoveryViewModel) {
+//    var loading = viewModel.loading
+//    var recoverySuccess = viewModel.recoverySuccess
+//    var recoveryError = viewModel.recoveryError
+//
+//    var newPassword = viewModel.newPassword
+//    var confirmNewPassword = viewModel.confirmPassword
+//
 //    Column(
 //        modifier = Modifier.fillMaxWidth(),
 //        verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -220,6 +267,8 @@
 //            fontStyle = FontStyle.Italic
 //        )
 //        InputText(
+//            value = newPassword,
+//            onValueChange = { viewModel.updateNewPassword(it) },
 //            label = "Nova senha",
 //            backGroundColor = darkCean,
 //            fontColor = superLightCean,
@@ -234,6 +283,8 @@
 //        )
 //        InputText(
 //            label = "Confirme a nova senha",
+//            value = confirmNewPassword,
+//            onValueChange = { viewModel.updateConfirmPassword(it) },
 //            backGroundColor = darkCean,
 //            fontColor = superLightCean,
 //            isSecret = true,
@@ -257,9 +308,22 @@
 //                    contentDescription = "Ícone de disquete"
 //                )
 //            },
-//            onClick = { onSuccssesRecovery() }
+//            onClick = { viewModel.recoverUserPassword(confirmNewPassword) }
 //        )
 //    }
+//
+//    if (recoveryError != null) {
+//        Text(
+//            text = recoveryError,
+//            color = lightRed,
+//            modifier = Modifier.fillMaxWidth(),
+//            textAlign = TextAlign.Center,
+//            style = MaterialTheme.typography.bodyMedium,
+//            fontWeight = FontWeight.Bold
+//        )
+//    }
+//
+//    if (recoverySuccess) { onRecoverySuccess() }
 //}
 //
 //@Composable

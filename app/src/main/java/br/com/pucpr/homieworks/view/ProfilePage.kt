@@ -1,5 +1,8 @@
 package br.com.pucpr.homieworks.view
 
+import android.os.Build
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,27 +29,36 @@ import br.com.pucpr.homieworks.view.util.SessionHeader
 import br.com.pucpr.homieworks.ui.theme.yellow
 import androidx.compose.material.icons.rounded.Face
 import androidx.compose.material.icons.rounded.Mail
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavController
-import br.com.pucpr.homieworks.Screen
+import br.com.pucpr.homieworks.navigation.Screen
+import br.com.pucpr.homieworks.util.FirebaseAuthService
 import br.com.pucpr.homieworks.view.util.GenericButton
 import br.com.pucpr.homieworks.view.util.GenericPage
 import br.com.pucpr.homieworks.ui.theme.lightGreen
 import br.com.pucpr.homieworks.ui.theme.lightRed
 import br.com.pucpr.homieworks.ui.theme.darkCean
 import br.com.pucpr.homieworks.ui.theme.superLightCean
+import br.com.pucpr.homieworks.util.SessionManager
 import br.com.pucpr.homieworks.viewmodel.ProfileViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProfilePage(
    viewModel: ProfileViewModel,
    navController: NavController
 ) {
     var option by remember { mutableStateOf("profile") }
+
+    viewModel.loadProfileInfo()
 
     GenericPage(
         { ProfileHeader(
@@ -65,7 +77,14 @@ fun ProfilePage(
             }
         ) },
         { ProfileContent(viewModel) },
-        { ProfileFooter() }
+        { ProfileFooter(
+            onLogoutConfirmed = {
+                navController.navigate(Screen.Login.route) {
+                    popUpTo(Screen.Profile.route) { inclusive = true }
+                }
+            },
+            viewModel = viewModel)
+        }
     )
 }
 
@@ -74,8 +93,6 @@ fun ProfileHeader(
     onProfileIconClick: () -> Unit,
     onMenuOptionSelected: (String) -> Unit
 ) {
-    val helpedits = 0
-    val workDone = 0
     val fontColor = Color.White
 
     Row(
@@ -89,24 +106,24 @@ fun ProfileHeader(
                 onProfileIconClick = onProfileIconClick,
                 onMenuIconClick = onMenuOptionSelected
             )
-            Text(
-                text="Helpedits:",
-                style = MaterialTheme.typography.titleMedium,
-                color = fontColor
-            )
-            Text(
-                text = helpedits.toString(),
-                style = MaterialTheme.typography.titleLarge,
-                color = yellow,
-                fontWeight = FontWeight.Bold
-            )
+//            Text(
+//                text="Helpedits:",
+//                style = MaterialTheme.typography.titleMedium,
+//                color = fontColor
+//            )
+//            Text(
+//                text = SessionManager.sessionUser!!.helpedits.toString(),
+//                style = MaterialTheme.typography.titleLarge,
+//                color = yellow,
+//                fontWeight = FontWeight.Bold
+//            )
             Text(
                 text="Trabalhos realizados:",
                 style = MaterialTheme.typography.titleMedium,
                 color = fontColor
             )
             Text(
-                text = workDone.toString(),
+                text = SessionManager.sessionUser!!.worksDone.toString(),
                 style = MaterialTheme.typography.titleLarge,
                 color = yellow,
                 fontWeight = FontWeight.Bold
@@ -122,6 +139,7 @@ fun ProfileHeader(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProfileContent(viewModel: ProfileViewModel) {
     val fontColor = darkCean
@@ -141,7 +159,6 @@ fun ProfileContent(viewModel: ProfileViewModel) {
         value = viewModel.user.phoneNumber,
         onValueChange = { viewModel.updatePhone(it) },
         leadingIcon = {Icon(imageVector = Icons.Rounded.Phone, contentDescription = "Ícone de telefone", tint = fontColor)},
-        isSecret = true,
         backGroundColor = backgroundColor,
         fontColor = fontColor
     )
@@ -156,7 +173,7 @@ fun ProfileContent(viewModel: ProfileViewModel) {
     )
     InputText(
         label = "Senha",
-        value = viewModel.user.userPassword,
+        value = viewModel.user.userPassword.substring(0, 10),
         onValueChange = { viewModel.updatePassword(it) },
         leadingIcon = {Icon(imageVector = Icons.Rounded.Lock, contentDescription = "Ícone de cadeado", tint = fontColor)},
         isSecret = true,
@@ -173,7 +190,26 @@ fun ProfileContent(viewModel: ProfileViewModel) {
 }
 
 @Composable
-fun ProfileFooter() {
+fun ProfileFooter(
+    onLogoutConfirmed: () -> Unit,
+    viewModel: ProfileViewModel,
+) {
+    var showLogoutDialog by remember { mutableStateOf(false) }
+    var showRemoveAccount by remember { mutableStateOf(false) }
+    val profileSuccess = viewModel.profileSuccess
+    val profileError = viewModel.profileError
+
+    if (profileError != null) {
+        Text(
+            text = profileError,
+            color = lightRed,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Bold
+        )
+    }
+
     Column(
         modifier = Modifier
             .wrapContentHeight()
@@ -194,7 +230,7 @@ fun ProfileFooter() {
                         tint = Color.White
                     )
                 },
-                onClick = {},
+                onClick = { showLogoutDialog = true },
                 containerColor = lightRed,
                 textColor = Color.White
             )
@@ -209,10 +245,11 @@ fun ProfileFooter() {
                     )
                 },
                 containerColor = lightGreen,
-                onClick = {},
+                onClick = { viewModel.updateUserInfo() },
                 textColor = Color.White
             )
         }
+
         Row(
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -226,10 +263,59 @@ fun ProfileFooter() {
                         contentDescription = "Ícone de lixeira"
                     )
                 },
-                onClick = {},
+                onClick = { showRemoveAccount = true },
                 textColor = lightRed,
 
             )
         }
+    }
+
+    if (profileSuccess) {
+        Toast.makeText(LocalContext.current, "Alterações realizadas com sucesso", Toast.LENGTH_SHORT).show()
+        viewModel.loadProfileInfo()
+    }
+
+    if (showLogoutDialog) {
+        AlertDialog(
+            onDismissRequest = { showLogoutDialog = false },
+            title = { Text("Sair do aplicativo") },
+            text = { Text("Tem certeza que deseja sair da sua conta?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        FirebaseAuthService.logout()
+                        showLogoutDialog = false
+                        onLogoutConfirmed()
+                    }
+                ) { Text("Sim") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showLogoutDialog = false }) {
+                    Text("Cancelar")
+                }
+            }
+        )
+    }
+
+    if (showRemoveAccount) {
+        AlertDialog(
+            onDismissRequest = { showRemoveAccount = false },
+            title = { Text("Excluir") },
+            text = { Text("Tem certeza que deseja excluir essa conta?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.removeAccount()
+                        showRemoveAccount = false
+                        onLogoutConfirmed()
+                    }
+                ) { Text("Sim") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showRemoveAccount = false }) {
+                    Text("Cancelar")
+                }
+            }
+        )
     }
 }

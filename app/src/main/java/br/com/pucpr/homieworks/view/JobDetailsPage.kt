@@ -1,5 +1,8 @@
 package br.com.pucpr.homieworks.view
 
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,7 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowLeft
-import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Whatsapp
 import androidx.compose.material3.Icon
@@ -21,13 +24,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import br.com.pucpr.homieworks.Screen
+import br.com.pucpr.homieworks.navigation.Screen
 import br.com.pucpr.homieworks.model.Job
 import br.com.pucpr.homieworks.view.util.CardHeader
 import br.com.pucpr.homieworks.view.util.GenericButton
@@ -39,20 +43,33 @@ import br.com.pucpr.homieworks.ui.theme.darkCean
 import br.com.pucpr.homieworks.ui.theme.superLightCean
 import br.com.pucpr.homieworks.viewmodel.JobDetailViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun JobDetailsPage(
-    job: Job,
     viewModel: JobDetailViewModel,
+    job: Job?,
     navController: NavController
 ) {
+
+    LaunchedEffect(job) {
+        job?.let {
+            Log.e("TESTEE", it.toString())
+            viewModel.inflateJob(it)
+        }
+    }
+
     GenericPage(
         { JobDetailsHeader({
             navController.navigate(Screen.Feed.route){
                 popUpTo(Screen.JobDetails.route) { inclusive = true }
             }
         }) },
-        { JobDetailsContent(job) },
-        { JobDetailsFooter() }
+        { JobDetailsContent(viewModel) },
+        { JobDetailsFooter(viewModel, onBackClick =  {
+            navController.navigate(Screen.Feed.route) {
+                popUpTo(Screen.JobDetails.route) { inclusive = true }
+            }
+        }) }
     )
 }
 
@@ -85,8 +102,11 @@ fun JobDetailsHeader(onBackClick: () -> Unit) {
 
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun JobDetailsContent(job: Job) {
+fun JobDetailsContent(viewModel: JobDetailViewModel) {
+    val job = viewModel.job
+
     Column(
         modifier = Modifier
             .fillMaxHeight(0.9f)
@@ -137,44 +157,32 @@ fun JobDetailsContent(job: Job) {
                             modifier = Modifier.size(36.dp)
                         )
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun JobDetailsFooter() {
+fun JobDetailsFooter(viewModel: JobDetailViewModel, onBackClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         GenericButton(
-            text = "Recusar",
+            text = "Voltar",
             icon = {Icon(
-                imageVector = Icons.Default.Cancel,
+                imageVector = Icons.Default.ArrowBackIosNew,
                 contentDescription = "Ícone de x",
                 tint = Color.White
             )},
             containerColor = lightRed,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            onClick = { onBackClick() }
         )
-//        IconButton(
-//            onClick = { onBackToFeedClick() },
-//            content = {
-//                Icon(
-//                    imageVector = Icons.Default.ArrowDropDownCircle,
-//                    tint = Color.Black,
-//                    contentDescription = "Ícone de seta para baixo dentor de um círculo",
-//                    modifier = Modifier.size(80.dp)
-//                )
-//            },
-//            colors = IconButtonDefaults.iconButtonColors(
-//                containerColor = superLightCean,
-//            ),
-//        )
         GenericButton(
             text = "Aceitar",
             icon = {Icon(
@@ -183,7 +191,10 @@ fun JobDetailsFooter() {
                 tint = Color.White
             )},
             containerColor = lightGreen,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            onClick = {
+                viewModel.jobAccepted()
+            }
         )
     }
 }

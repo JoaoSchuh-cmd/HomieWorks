@@ -1,20 +1,20 @@
 package br.com.pucpr.homieworks.view
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
-import br.com.pucpr.homieworks.Screen
-import br.com.pucpr.homieworks.model.Job
-import br.com.pucpr.homieworks.view.util.Card
+import br.com.pucpr.homieworks.navigation.Screen
 import br.com.pucpr.homieworks.view.util.GenericPage
-import br.com.pucpr.homieworks.view.util.InfiniteAutoScrollList
 import br.com.pucpr.homieworks.view.util.SearchBar
 import br.com.pucpr.homieworks.view.util.SessionHeader
 import br.com.pucpr.homieworks.viewmodel.MyJobsViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MyJobsPage(
     viewModel: MyJobsViewModel,
@@ -70,28 +70,27 @@ fun MyJobsHeader(
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MyJobsContent(onCardClick: () -> Unit, onAddJobClick: () -> Unit) {
-    val jobs = remember {
-        List(100) { i ->
-            Job(
-                title = "Título do trabalho",
-                userName = "Teste",
-                userAddress = "Teste de endereço",
-                description = "Cortar a grama",
-                data = "30/07/2025 13:30"
-            )
-        }
-    }
-
-    InfiniteAutoScrollList(
-        items = jobs,
-        scrollDelayMs = 3000L,
-        itemContent = { job ->
-            Card(job = job, onCardClik = onCardClick)
-        },
-        onAddJobClick = { onAddJobClick() }
-    )
+//    val jobs = remember {
+//        List(100) { i ->
+//            Job(
+//                title = "Título do trabalho",
+//                description = "Cortar a grama",
+//                serviceDatetime = "30/07/2025 13:30"
+//            )
+//        }
+//    }
+//
+//    InfiniteAutoScrollList(
+//        items = jobs,
+//        scrollDelayMs = 3000L,
+//        itemContent = { job ->
+//            Card(job = job, onCardClik = onCardClick)
+//        },
+//        onAddJobClick = { onAddJobClick() }
+//    )
 }
 
 @Composable

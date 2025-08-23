@@ -26,8 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import br.com.pucpr.homieworks.Screen
-import br.com.pucpr.homieworks.model.Job
+import br.com.pucpr.homieworks.navigation.Screen
 import br.com.pucpr.homieworks.view.util.CardHeader
 import br.com.pucpr.homieworks.view.util.GenericButton
 import br.com.pucpr.homieworks.view.util.GenericPage
@@ -35,22 +34,21 @@ import br.com.pucpr.homieworks.ui.theme.darkCean
 import br.com.pucpr.homieworks.ui.theme.lightRed
 import br.com.pucpr.homieworks.ui.theme.mediumCean
 import br.com.pucpr.homieworks.ui.theme.superLightCean
-import br.com.pucpr.homieworks.viewmodel.AcceptedJobsDetailsViewModel
+import br.com.pucpr.homieworks.viewmodel.AcceptedJobDetailsViewModel
 
 @Composable
-fun AcceptedJobsDetailsPage(
-    job: Job,
-    viewModel: AcceptedJobsDetailsViewModel,
+fun AcceptedJobDetailsPage(
+    viewModel: AcceptedJobDetailsViewModel,
     navController: NavController
 ) {
     GenericPage(
-        { AcceptedJobsDetailsHeader {
+        { AcceptedJobDetailsHeader {
             navController.navigate(Screen.Accepted.route) {
                 popUpTo(Screen.AcceptedDetails.route) { inclusive = true }
             }
         } },
-        { AcceptedJobsDetailsContent(job) },
-        { AcceptedJobsDetailsFooter{
+        { AcceptedJobDetailsContent(viewModel) },
+        { AcceptedJobDetailsFooter{
             navController.navigate(Screen.Accepted.route) {
                 popUpTo(Screen.AcceptedDetails.route) { inclusive = true }
             }
@@ -59,7 +57,7 @@ fun AcceptedJobsDetailsPage(
 }
 
 @Composable
-fun AcceptedJobsDetailsHeader(onBackClick: () -> Unit) {
+fun AcceptedJobDetailsHeader(onBackClick: () -> Unit) {
     Row(
         verticalAlignment = Alignment.Top
     ) {
@@ -88,7 +86,9 @@ fun AcceptedJobsDetailsHeader(onBackClick: () -> Unit) {
 }
 
 @Composable
-fun AcceptedJobsDetailsContent(job: Job) {
+fun AcceptedJobDetailsContent(viewModel: AcceptedJobDetailsViewModel) {
+    val job = viewModel.job
+    
     Column(
         modifier = Modifier
             .fillMaxHeight(0.9f)
@@ -147,7 +147,7 @@ fun AcceptedJobsDetailsContent(job: Job) {
 }
 
 @Composable
-fun AcceptedJobsDetailsFooter(
+fun AcceptedJobDetailsFooter(
     onBackClick: () -> Unit
 ) {
     Row(

@@ -5,7 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.pucpr.homieworks.api.Retrofit
 import br.com.pucpr.homieworks.model.User
+import br.com.pucpr.homieworks.util.SessionManager
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -29,44 +31,57 @@ class SignUpViewModel : ViewModel() {
     fun updateAddressCity(city: String) { user = user.copy(addressCity = city) }
     fun updateAddressState(state: String) { user = user.copy(addressState = state) }
     fun updateAddressPostalCode(postalCode: String) { user = user.copy(addressPostalCode = postalCode) }
+    private fun updateFirebaseUid(firebaseUid: String) { user = user.copy(firebaseUid = firebaseUid) }
 
-    fun fazerCadastro(
-        user: User?
-    ) {
+    fun register() {
         viewModelScope.launch {
-            signUpSuccess = true
+            loading = true
+            signUpSuccess = false
             signUpError = null
 
             try {
-                if (user != null) {
-                    val authResult = FirebaseAuth.getInstance()
+                if (validarCampos(user)) {
+                    val userFirebase = FirebaseAuth.getInstance()
                         .createUserWithEmailAndPassword(user.email, user.userPassword)
                         .await()
 
-                    val userId = authResult.user?.uid
-                        ?: throw Exception("Errro ao obter ID do usuário")
+                    val uid = userFirebase.user?.uid
+                        ?: throw Exception("Erro ao obter UID do Firebase")
 
-                    val userData = mapOf(
-                        "name" to user.name,
-                        "phone" to user.phoneNumber,
-                        "street" to user.addressStreet,
-                        "number" to user.addressNum,
-                        "city" to user.addressCity,
-                        "state" to user.addressState,
-                        "postalCode" to user.addressPostalCode,
-                        "email" to user.email
-                    )
+                    updateFirebaseUid(uid)
+                    try {
+                        Retrofit.api.insertUser(user)
+                        SessionManager.sessionUser = user
+                    } catch (apiException: Exception) {
+                        FirebaseAuth.getInstance().currentUser?.delete()?.await()
+                        throw Exception(apiException)
+                    }
 
-                    // TODO: "Chamar rota de cadastro de usuário no backend"
                     signUpSuccess = true
                 } else {
-                    throw Exception("Usuário é nulo")
+                    throw Exception("Necessário preencher todos os campos de usuário")
                 }
             } catch (e: Exception) {
                 signUpError = e.message ?: "Erro desconhecido"
+
             } finally {
                 loading = false
             }
         }
     }
+
+    private fun validarCampos(user: User) : Boolean {
+        return listOf(
+            user.name,
+            user.phoneNumber,
+            user.email,
+            user.userPassword,
+            user.addressStreet,
+            user.addressNum,
+            user.addressCity,
+            user.addressState,
+            user.addressPostalCode
+        ).none { it.isBlank() }
+    }
 }
+

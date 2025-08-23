@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import br.com.pucpr.homieworks.R
-import br.com.pucpr.homieworks.Screen
+import br.com.pucpr.homieworks.navigation.Screen
 import br.com.pucpr.homieworks.view.util.GenericButton
 import br.com.pucpr.homieworks.view.util.InputText
 import br.com.pucpr.homieworks.ui.theme.mediumCean
@@ -156,7 +156,6 @@ fun LoginPage(
                             }
                         }
                     }
-
 //                    TextButton(
 //                        onClick = { navController.navigate(Screen.Recovery.route) {
 //                            popUpTo(Screen.Login.route) { inclusive = true }

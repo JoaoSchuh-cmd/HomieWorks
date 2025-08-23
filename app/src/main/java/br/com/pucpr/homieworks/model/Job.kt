@@ -1,9 +1,18 @@
 package br.com.pucpr.homieworks.model
 
-data class Job(
-    val title: String,
-    val userName: String,
-    val userAddress: String,
-    val description: String,
-    val data: String,
+import android.os.Build
+import androidx.annotation.RequiresApi
+import br.com.pucpr.homieworks.util.SessionManager
+import java.time.LocalDateTime
+
+data class Job @RequiresApi(Build.VERSION_CODES.O) constructor(
+    val id: Long? = 0L,
+    val title: String = "",
+    val description: String = "",
+    val owner: User? = SessionManager.sessionUser!!,
+    val worker: User? = null,
+    val createDate: LocalDateTime = LocalDateTime.now(),
+    val helpedits: Int = 10,
+    val serviceDatetime: LocalDateTime = LocalDateTime.now().plusDays(30),
+    val finished: Boolean? = false,
 )

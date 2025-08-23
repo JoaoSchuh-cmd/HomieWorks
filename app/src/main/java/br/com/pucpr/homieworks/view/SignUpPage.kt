@@ -26,6 +26,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -35,10 +36,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import br.com.pucpr.homieworks.Screen
+import br.com.pucpr.homieworks.navigation.Screen
 import br.com.pucpr.homieworks.view.util.GenericButton
 import br.com.pucpr.homieworks.view.util.InputText
 import br.com.pucpr.homieworks.ui.theme.darkCean
@@ -74,6 +76,13 @@ fun SignUpPage(
                     popUpTo(Screen.SignUp.route) { inclusive = true }
                 } },
                 viewModel = viewModel,
+                onSignUpSuccess = {
+                    LaunchedEffect(Unit) {
+                        navController.navigate(Screen.Feed.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    }
+                }
             )
             SignUpFooter(
                 onAlreadyHaveAccount = {
@@ -134,6 +143,7 @@ fun SignUpContent(
     onSessionChange: (Int) -> Unit,
     onCancel: () -> Unit,
     viewModel: SignUpViewModel,
+    onSignUpSuccess: @Composable () -> Unit,
 ) {
     Column(
         modifier = Modifier.wrapContentHeight(),
@@ -141,7 +151,14 @@ fun SignUpContent(
     ) {
         if (session == 1) PersonalInfoForm(viewModel) else AddressInfoForm(viewModel)
 
-        if (session == 1) PersonalInfoFooter(onSessionChange = onSessionChange, onCancel = onCancel) else AddressInfoFooter(onSessionChange, viewModel)
+        if (session == 1) PersonalInfoFooter(
+            onSessionChange = onSessionChange,
+            onCancel = onCancel)
+        else AddressInfoFooter(
+            onSessionChange = onSessionChange,
+            viewModel = viewModel,
+            onSignUpSuccess = { onSignUpSuccess() }
+        )
     }
 }
 
@@ -178,7 +195,7 @@ fun PersonalInfoForm(viewModel: SignUpViewModel) {
         },
         isSecret = false,
         backGroundColor = backGroundColor,
-        fontColor = fontColor
+        fontColor = fontColor,
     )
     InputText(
         label = "E-mail",
@@ -273,9 +290,8 @@ fun AddressInfoForm(viewModel: SignUpViewModel) {
                 tint = fontColor
             )
         },
-        isSecret = true,
         backGroundColor = backgroundColor,
-        fontColor = fontColor
+        fontColor = fontColor,
     )
     InputText(
         label = "CEP",
@@ -338,7 +354,12 @@ fun PersonalInfoFooter(onSessionChange: (Int) -> Unit, onCancel: () -> Unit) {
 fun AddressInfoFooter(
     onSessionChange: (Int) -> Unit,
     viewModel: SignUpViewModel,
+    onSignUpSuccess: @Composable () -> Unit
 ) {
+    val loading = viewModel.loading
+    val signUpError = viewModel.signUpError
+    val signUpSuccess = viewModel.signUpSuccess
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -361,8 +382,21 @@ fun AddressInfoFooter(
         GenericButton(
             modifier = Modifier.weight(1f),
             containerColor = lightGreen,
-            text = "Finalizado",
-            onClick = { viewModel.fazerCadastro(viewModel.user) }
+            text = if (loading) "Finalizando..." else "Finalizado",
+            onClick = { viewModel.register() }
         )
     }
+
+    if (signUpError != null) {
+        Text(
+            text = signUpError,
+            color = lightRed,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Bold
+        )
+    }
+
+    if (signUpSuccess) { onSignUpSuccess() }
 }
